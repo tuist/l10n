@@ -52,6 +52,10 @@
       "text": "Translate, validate, and track what needs updating.",
       "items": [
         {
+          "cmd": "l10n init",
+          "desc": "Interactive project setup"
+        },
+        {
           "cmd": "l10n translate",
           "desc": "Generate translations"
         },
