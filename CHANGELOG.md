@@ -1,6 +1,17 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.1.3] - 2026-02-03
+
+### Chores
+- chore: add agents guidance and updated translations
+
+
+### Other
+- Drop version from release artifact names
+- Add l10n tool to mise config
+- Show completed files in progress output
+
 ## [v0.1.2] - 2026-02-03
 
 ### Other
