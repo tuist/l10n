@@ -9,9 +9,9 @@ describe("validate syntax", () => {
   });
 
   test("rejects invalid JSON", async () => {
-    await expect(
-      validate("/tmp", "json", "not json", "", { preserve: ["none"] }),
-    ).rejects.toThrow("syntax-validator");
+    await expect(validate("/tmp", "json", "not json", "", { preserve: ["none"] })).rejects.toThrow(
+      "syntax-validator",
+    );
   });
 
   test("validates valid YAML", async () => {
@@ -24,18 +24,16 @@ describe("validate syntax", () => {
     const po = `msgid "hello"
 msgstr "hola"
 `;
-    await expect(
-      validate("/tmp", "po", po, "", { preserve: ["none"] }),
-    ).resolves.toBeUndefined();
+    await expect(validate("/tmp", "po", po, "", { preserve: ["none"] })).resolves.toBeUndefined();
   });
 
   test("rejects PO with missing msgstr", async () => {
     const po = `msgid "hello"
 msgid "world"
 `;
-    await expect(
-      validate("/tmp", "po", po, "", { preserve: ["none"] }),
-    ).rejects.toThrow("syntax-validator");
+    await expect(validate("/tmp", "po", po, "", { preserve: ["none"] })).rejects.toThrow(
+      "syntax-validator",
+    );
   });
 
   test("validates markdown frontmatter", async () => {
@@ -53,9 +51,9 @@ Content here`;
 title: [invalid
 ---
 Content`;
-    await expect(
-      validate("/tmp", "markdown", md, "", { preserve: ["none"] }),
-    ).rejects.toThrow("syntax-validator");
+    await expect(validate("/tmp", "markdown", md, "", { preserve: ["none"] })).rejects.toThrow(
+      "syntax-validator",
+    );
   });
 });
 

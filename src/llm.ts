@@ -137,8 +137,7 @@ async function chatOpenAI(
     throw new Error("llm model is required");
   }
 
-  const url =
-    cfg.base_url.replace(/\/+$/, "") + (cfg.chat_completions_path || "");
+  const url = cfg.base_url.replace(/\/+$/, "") + (cfg.chat_completions_path || "");
 
   const body: ChatRequest = {
     model,
@@ -153,9 +152,7 @@ async function chatOpenAI(
     ...resolveHeaders(cfg),
   };
 
-  const timeout = cfg.timeout_seconds
-    ? cfg.timeout_seconds * 1000
-    : DEFAULT_TIMEOUT_MS;
+  const timeout = cfg.timeout_seconds ? cfg.timeout_seconds * 1000 : DEFAULT_TIMEOUT_MS;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
 
@@ -195,8 +192,7 @@ async function chatAnthropic(
     throw new Error("llm model is required");
   }
 
-  const url =
-    cfg.base_url.replace(/\/+$/, "") + (cfg.chat_completions_path || "");
+  const url = cfg.base_url.replace(/\/+$/, "") + (cfg.chat_completions_path || "");
 
   const systemParts: string[] = [];
   const anthMessages: AnthropicMessage[] = [];
@@ -239,9 +235,7 @@ async function chatAnthropic(
     ...resolveHeaders(cfg),
   };
 
-  const timeout = cfg.timeout_seconds
-    ? cfg.timeout_seconds * 1000
-    : DEFAULT_TIMEOUT_MS;
+  const timeout = cfg.timeout_seconds ? cfg.timeout_seconds * 1000 : DEFAULT_TIMEOUT_MS;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
 

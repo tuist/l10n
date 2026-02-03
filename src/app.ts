@@ -23,10 +23,7 @@ export interface TranslateOptions {
   reporter?: Reporter;
 }
 
-export async function translateCmd(
-  root: string,
-  opts: TranslateOptions,
-): Promise<void> {
+export async function translateCmd(root: string, opts: TranslateOptions): Promise<void> {
   const pl = await buildPlan(root);
   if (pl.sources.length === 0) throw new Error("no sources found");
 
@@ -181,10 +178,7 @@ export interface CheckOptions {
   reporter?: Reporter;
 }
 
-export async function checkCmd(
-  root: string,
-  opts: CheckOptions,
-): Promise<void> {
+export async function checkCmd(root: string, opts: CheckOptions): Promise<void> {
   const pl = await buildPlan(root);
   if (pl.sources.length === 0) throw new Error("no sources found");
 
@@ -235,10 +229,7 @@ export interface StatusOptions {
   reporter?: Reporter;
 }
 
-export async function statusCmd(
-  root: string,
-  opts: StatusOptions,
-): Promise<void> {
+export async function statusCmd(root: string, opts: StatusOptions): Promise<void> {
   const pl = await buildPlan(root);
   if (pl.sources.length === 0) throw new Error("no sources found");
 
@@ -307,10 +298,7 @@ export interface CleanOptions {
   reporter?: Reporter;
 }
 
-export async function cleanCmd(
-  root: string,
-  opts: CleanOptions,
-): Promise<void> {
+export async function cleanCmd(root: string, opts: CleanOptions): Promise<void> {
   const pl = await buildPlan(root);
   if (pl.sources.length === 0) throw new Error("no sources found");
 
@@ -398,10 +386,7 @@ export interface InitOptions {
   reporter?: Reporter;
 }
 
-export async function initCmd(
-  root: string,
-  opts: InitOptions,
-): Promise<void> {
+export async function initCmd(root: string, opts: InitOptions): Promise<void> {
   const reporter = ensureReporter(opts.reporter);
 
   if (!process.stdin.isTTY) {
@@ -444,23 +429,14 @@ export async function initCmd(
   }
 
   const attributesPath = join(rootAbs, ".gitattributes");
-  if (
-    await ensureLine(
-      attributesPath,
-      ".l10n/locks/** linguist-generated=true",
-    )
-  ) {
+  if (await ensureLine(attributesPath, ".l10n/locks/** linguist-generated=true")) {
     reporter.info("updated .gitattributes");
   }
 
   reporter.info("next steps:");
   reporter.info("1. Open L10N.md and uncomment the example config.");
-  reporter.info(
-    "2. Update source globs, targets, and output paths for your repo.",
-  );
-  reporter.info(
-    "3. Set OPENAI_API_KEY (or change the provider/model settings).",
-  );
+  reporter.info("2. Update source globs, targets, and output paths for your repo.");
+  reporter.info("3. Set OPENAI_API_KEY (or change the provider/model settings).");
   reporter.info("4. Run `l10n translate` to generate drafts.");
 }
 
@@ -510,10 +486,7 @@ function sourcePathFromLock(rootAbs: string, lockFilePath: string): string {
   return rel.replace(/\.lock$/, "").replaceAll(sep, "/");
 }
 
-async function walkLocks(
-  dir: string,
-  callback: (path: string) => Promise<void>,
-): Promise<void> {
+async function walkLocks(dir: string, callback: (path: string) => Promise<void>): Promise<void> {
   let entries;
   try {
     entries = await readdir(dir, { withFileTypes: true });
@@ -562,14 +535,12 @@ function renderL10NTemplate(
   const names = localeNameByCode(locales);
 
   const sourceLabel = labelForLocale(sourceLang, names);
-  const targetLabel = targets
-    .map((t) => labelForLocale(t, names))
-    .join(", ");
+  const targetLabel = targets.map((t) => labelForLocale(t, names)).join(", ");
 
   let b = "";
   b += "+++\n";
   b += "# Example configuration (uncomment to enable)\n";
-  b += '# [llm]\n';
+  b += "# [llm]\n";
   b += '# provider = "openai"\n';
   b += '# api_key = "{{env.OPENAI_API_KEY}}"\n';
   b += "#\n";
@@ -598,10 +569,7 @@ function formatTOMLArray(values: string[]): string {
   return "[" + values.map((v) => `"${v}"`).join(", ") + "]";
 }
 
-function labelForLocale(
-  code: string,
-  names: Record<string, string>,
-): string {
+function labelForLocale(code: string, names: Record<string, string>): string {
   const name = names[code];
   if (name?.trim()) return `${name} (${code})`;
   return code;
@@ -632,32 +600,26 @@ async function promptSelect(
   }
 
   return new Promise<string>((resolve) => {
-    rl.question(
-      `Enter number [default: ${defaultValue ?? "1"}]: `,
-      (answer) => {
-        rl.close();
-        const trimmed = answer.trim();
-        if (!trimmed && defaultValue) {
-          resolve(defaultValue);
-          return;
-        }
-        const idx = parseInt(trimmed, 10) - 1;
-        if (idx >= 0 && idx < options.length) {
-          resolve(options[idx].value);
-        } else if (defaultValue) {
-          resolve(defaultValue);
-        } else {
-          resolve(options[0]?.value ?? "");
-        }
-      },
-    );
+    rl.question(`Enter number [default: ${defaultValue ?? "1"}]: `, (answer) => {
+      rl.close();
+      const trimmed = answer.trim();
+      if (!trimmed && defaultValue) {
+        resolve(defaultValue);
+        return;
+      }
+      const idx = parseInt(trimmed, 10) - 1;
+      if (idx >= 0 && idx < options.length) {
+        resolve(options[idx].value);
+      } else if (defaultValue) {
+        resolve(defaultValue);
+      } else {
+        resolve(options[0]?.value ?? "");
+      }
+    });
   });
 }
 
-async function promptMultiSelect(
-  title: string,
-  options: SelectOption[],
-): Promise<string[]> {
+async function promptMultiSelect(title: string, options: SelectOption[]): Promise<string[]> {
   const readline = await import("readline");
   const rl = readline.createInterface({
     input: process.stdin,

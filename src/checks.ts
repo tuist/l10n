@@ -18,19 +18,13 @@ export interface CheckOptions {
 export class ToolError extends Error {
   tool: string;
   constructor(tool: string, err: Error | string) {
-    const message =
-      typeof err === "string" ? err : err.message ?? String(err);
+    const message = typeof err === "string" ? err : (err.message ?? String(err));
     super(`${tool} tool failed: ${message}`);
     this.tool = tool;
   }
 }
 
-const DEFAULT_PRESERVE = [
-  "code_blocks",
-  "inline_code",
-  "urls",
-  "placeholders",
-];
+const DEFAULT_PRESERVE = ["code_blocks", "inline_code", "urls", "placeholders"];
 
 const codeBlockRe = /```[\s\S]*?```/g;
 const inlineCodeRe = /`[^`\n]+`/g;
@@ -45,12 +39,7 @@ export async function validate(
   opts: CheckOptions,
 ): Promise<void> {
   if (opts.reporter && opts.label?.trim()) {
-    opts.reporter.activity(
-      "Validating",
-      opts.current ?? 0,
-      opts.total ?? 0,
-      opts.label,
-    );
+    opts.reporter.activity("Validating", opts.current ?? 0, opts.total ?? 0, opts.label);
   }
 
   // Syntax validation
@@ -161,8 +150,7 @@ function validatePO(content: string): string | null {
       if (!hasQuotedString(line)) return "po msgid missing quoted string";
     } else if (line.startsWith("msgid_plural ")) {
       if (state !== "msgid") return "po msgid_plural without msgid";
-      if (!hasQuotedString(line))
-        return "po msgid_plural missing quoted string";
+      if (!hasQuotedString(line)) return "po msgid_plural missing quoted string";
     } else if (line.startsWith("msgstr")) {
       if (!hasMsgid) return "po msgstr without msgid";
       hasMsgstr = true;
@@ -192,24 +180,17 @@ function hasQuotedString(line: string): boolean {
   return count >= 2;
 }
 
-function resolvePreserve(
-  preserve?: string[],
-): Record<string, boolean> {
+function resolvePreserve(preserve?: string[]): Record<string, boolean> {
   if (!preserve || preserve.length === 0) {
     return Object.fromEntries(DEFAULT_PRESERVE.map((k) => [k, true]));
   }
   for (const v of preserve) {
     if (v.trim().toLowerCase() === "none") return {};
   }
-  return Object.fromEntries(
-    preserve.map((k) => [k.trim().toLowerCase(), true]),
-  );
+  return Object.fromEntries(preserve.map((k) => [k.trim().toLowerCase(), true]));
 }
 
-function extractPreservables(
-  source: string,
-  kinds: Record<string, boolean>,
-): string[] {
+function extractPreservables(source: string, kinds: Record<string, boolean>): string[] {
   const tokens: string[] = [];
   const seen = new Set<string>();
   let text = source;
@@ -269,11 +250,7 @@ function validatePreserve(
   return null;
 }
 
-function selectCheckCmd(
-  format: Format,
-  fallback?: string,
-  cmds?: Record<string, string>,
-): string {
+function selectCheckCmd(format: Format, fallback?: string, cmds?: Record<string, string>): string {
   if (cmds) {
     const value = cmds[format];
     if (value?.trim()) return value;
@@ -296,11 +273,7 @@ function formatLabel(format: Format): string {
   }
 }
 
-async function runExternal(
-  root: string,
-  cmdTemplate: string,
-  content: string,
-): Promise<void> {
+async function runExternal(root: string, cmdTemplate: string, content: string): Promise<void> {
   if (!root) throw new Error("external check requires root path");
 
   const tmpDir = join(root, ".l10n", "tmp");
@@ -320,9 +293,7 @@ async function runExternal(
         "\n" +
         (err.stdout?.toString() ?? "")
       ).trim();
-      throw new Error(
-        `external check failed: ${err.message}\n${output}`,
-      );
+      throw new Error(`external check failed: ${err.message}\n${output}`);
     }
   } finally {
     await unlink(tmpFile).catch(() => {});

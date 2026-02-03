@@ -46,10 +46,7 @@ export interface OutputPlan {
   outputPath: string;
 }
 
-export function contextPartsFor(
-  source: SourcePlan,
-  lang: string,
-): string[] {
+export function contextPartsFor(source: SourcePlan, lang: string): string[] {
   const parts = [...source.contextBodies];
   if (source.langContextBodies?.[lang]) {
     parts.push(...source.langContextBodies[lang]);
@@ -130,10 +127,7 @@ interface Candidate {
   basePath: string;
 }
 
-async function resolveEntries(
-  root: string,
-  entries: Entry[],
-): Promise<Record<string, Candidate>> {
+async function resolveEntries(root: string, entries: Entry[]): Promise<Record<string, Candidate>> {
   const candidates: Record<string, Candidate> = {};
 
   for (const entry of entries) {
@@ -167,10 +161,7 @@ async function resolveEntries(
   return candidates;
 }
 
-function entryPattern(
-  root: string,
-  entry: Entry,
-): { pattern: string; base: string } {
+function entryPattern(root: string, entry: Entry): { pattern: string; base: string } {
   let relDir = relative(root, entry.originDir);
   if (relDir === ".") relDir = "";
 
@@ -182,10 +173,7 @@ function entryPattern(
   return { pattern, base };
 }
 
-async function resolveExcludes(
-  root: string,
-  entry: Entry,
-): Promise<Set<string>> {
+async function resolveExcludes(root: string, entry: Entry): Promise<Set<string>> {
   const excludes = new Set<string>();
   if (!entry.exclude || entry.exclude.length === 0) return excludes;
 
@@ -203,10 +191,7 @@ async function resolveExcludes(
 
 function shouldOverride(existing: Entry, candidate: Entry): boolean {
   if (candidate.originDepth > existing.originDepth) return true;
-  if (
-    candidate.originDepth === existing.originDepth &&
-    candidate.index > existing.index
-  )
+  if (candidate.originDepth === existing.originDepth && candidate.index > existing.index)
     return true;
   return false;
 }
@@ -259,10 +244,7 @@ async function discoverL10N(root: string): Promise<L10NFile[]> {
   return files;
 }
 
-function ancestorsFor(
-  sourceAbs: string,
-  l10nFiles: L10NFile[],
-): L10NFile[] {
+function ancestorsFor(sourceAbs: string, l10nFiles: L10NFile[]): L10NFile[] {
   const ancestors = l10nFiles.filter((f) => isAncestor(f.dir, sourceAbs));
   ancestors.sort((a, b) => a.depth - b.depth);
   return ancestors;
@@ -279,10 +261,7 @@ function globBase(pattern: string): string {
   return dirname(pattern.slice(0, idx));
 }
 
-async function readLangContext(
-  dir: string,
-  lang: string,
-): Promise<{ body: string; ok: boolean }> {
+async function readLangContext(dir: string, lang: string): Promise<{ body: string; ok: boolean }> {
   const trimmed = lang.trim();
   if (!trimmed) throw new Error("empty language code");
   if (trimmed.includes("/") || trimmed.includes("\\")) {
@@ -300,10 +279,7 @@ async function readLangContext(
   }
 }
 
-async function walkDir(
-  dir: string,
-  callback: (path: string) => Promise<void>,
-): Promise<void> {
+async function walkDir(dir: string, callback: (path: string) => Promise<void>): Promise<void> {
   let entries;
   try {
     entries = await readdir(dir, { withFileTypes: true });

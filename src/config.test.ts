@@ -27,9 +27,7 @@ body content`;
   });
 
   test("throws when closing +++ is missing", () => {
-    expect(() => splitTomlFrontmatter("+++\nno closing")).toThrow(
-      "no closing +++",
-    );
+    expect(() => splitTomlFrontmatter("+++\nno closing")).toThrow("no closing +++");
   });
 });
 
@@ -39,9 +37,7 @@ describe("sourcePath", () => {
   });
 
   test("falls back to path", () => {
-    expect(sourcePath({ source: "", path: "files/*.json" })).toBe(
-      "files/*.json",
-    );
+    expect(sourcePath({ source: "", path: "files/*.json" })).toBe("files/*.json");
   });
 });
 

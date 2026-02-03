@@ -10,7 +10,9 @@
     "build": "bun build src/cli.ts --compile --outfile dist/l10n",
     "dev": "bun run src/cli.ts",
     "test": "bun test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "format": "biome format --write src/",
+    "format:check": "biome format src/"
   },
   "dependencies": {
     "@iarna/toml": "^2.2.5",
@@ -18,8 +20,12 @@
     "minimatch": "^10.0.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.0",
     "@types/js-yaml": "^4.0.9",
     "bun-types": "latest",
     "typescript": "^5.7.0"
-  }
+  },
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ]
 }

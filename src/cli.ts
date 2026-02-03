@@ -4,13 +4,7 @@ import { resolve, isAbsolute, dirname } from "path";
 import { statSync } from "fs";
 import { findRoot } from "./root.js";
 import { Renderer } from "./renderer.js";
-import {
-  initCmd,
-  translateCmd,
-  checkCmd,
-  statusCmd,
-  cleanCmd,
-} from "./app.js";
+import { initCmd, translateCmd, checkCmd, statusCmd, cleanCmd } from "./app.js";
 
 // ── Argument parsing ───────────────────────────────────────────────────
 

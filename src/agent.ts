@@ -119,14 +119,10 @@ function defaultBrief(req: TranslationRequest): string {
     "Return only the translated content.",
   ];
   if (isStructuredFormat(req.format)) {
-    lines.push(
-      `Return valid ${req.format} only. Do not wrap in markdown fences.`,
-    );
+    lines.push(`Return valid ${req.format} only. Do not wrap in markdown fences.`);
   }
   if (req.frontmatter === FRONTMATTER_PRESERVE) {
-    lines.push(
-      "Frontmatter is preserved separately; do not add new frontmatter.",
-    );
+    lines.push("Frontmatter is preserved separately; do not add new frontmatter.");
   }
   lines.push(`Tools run after translation: ${toolsSummary()}.`);
   return lines.join("\n");
@@ -156,9 +152,11 @@ async function translateOnce(
   return resp.replace(/\n+$/, "");
 }
 
-function splitMarkdownFrontmatter(
-  contents: string,
-): { frontmatter: string; body: string; ok: boolean } {
+function splitMarkdownFrontmatter(contents: string): {
+  frontmatter: string;
+  body: string;
+  ok: boolean;
+} {
   const lines = contents.split("\n");
   if (lines.length === 0) return { frontmatter: "", body: contents, ok: false };
   const marker = lines[0].trim();

@@ -13,8 +13,7 @@ export const firstParty: ToolSpec[] = [
   {
     name: "Preserve checks",
     category: "Guards",
-    description:
-      "Ensure code blocks, inline code, URLs, and placeholders survive.",
+    description: "Ensure code blocks, inline code, URLs, and placeholders survive.",
   },
   {
     name: "Custom commands",

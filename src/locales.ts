@@ -55,9 +55,7 @@ export function localeLabel(locale: Locale): string {
   return `${locale.name} (${locale.code})`;
 }
 
-export function localeNameByCode(
-  locales: Locale[],
-): Record<string, string> {
+export function localeNameByCode(locales: Locale[]): Record<string, string> {
   const out: Record<string, string> = {};
   for (const locale of locales) {
     out[locale.code] = locale.name;

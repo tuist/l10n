@@ -1,8 +1,4 @@
-import type {
-  Reporter,
-  StatusKind,
-  ProgressReporter,
-} from "./reporter.js";
+import type { Reporter, StatusKind, ProgressReporter } from "./reporter.js";
 
 // ANSI color helpers
 const ESC = "\x1b[";
@@ -30,10 +26,7 @@ export class Renderer implements Reporter {
 
   constructor(opts: RendererOptions) {
     this.out = opts.out ?? process.stdout;
-    this.isTTY =
-      typeof (this.out as any).isTTY === "boolean"
-        ? (this.out as any).isTTY
-        : false;
+    this.isTTY = typeof (this.out as any).isTTY === "boolean" ? (this.out as any).isTTY : false;
     this.noColor = opts.noColor || !this.isTTY;
   }
 
@@ -50,12 +43,7 @@ export class Renderer implements Reporter {
     this.println(msg);
   }
 
-  activity(
-    stage: string,
-    current: number,
-    total: number,
-    label: string,
-  ): void {
+  activity(stage: string, current: number, total: number, label: string): void {
     const line = formatActivityLine(stage, current, total, label);
     if (!this.isTTY || this.noColor) {
       this.println(line);
@@ -116,11 +104,7 @@ export class Renderer implements Reporter {
     this.out.write(message + "\n");
   }
 
-  private tintProgressLine(
-    line: string,
-    current: number,
-    total: number,
-  ): string {
+  private tintProgressLine(line: string, current: number, total: number): string {
     if (this.noColor || total <= 0 || line.length === 0) return line;
     current = Math.max(0, Math.min(current, total));
     let activeLen = Math.round((line.length * current) / total);
@@ -163,12 +147,7 @@ function truncate(value: string, max: number): string {
   return value.slice(0, max - 3) + "...";
 }
 
-function formatActivityLine(
-  stage: string,
-  current: number,
-  total: number,
-  label: string,
-): string {
+function formatActivityLine(stage: string, current: number, total: number, label: string): string {
   stage = (stage || "Working").trim();
   label = truncate(label, 80);
   if (label.trim() && !label.endsWith("...")) {

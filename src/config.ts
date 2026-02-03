@@ -69,9 +69,11 @@ export const FRONTMATTER_TRANSLATE = "translate";
 
 // ── Parsing ────────────────────────────────────────────────────────────
 
-export function splitTomlFrontmatter(
-  contents: string,
-): { frontmatter: string; body: string; hasFrontmatter: boolean } {
+export function splitTomlFrontmatter(contents: string): {
+  frontmatter: string;
+  body: string;
+  hasFrontmatter: boolean;
+} {
   const lines = contents.split("\n");
   if (lines.length === 0 || lines[0].trim() !== "+++") {
     return { frontmatter: "", body: contents, hasFrontmatter: false };
@@ -93,8 +95,7 @@ export function splitTomlFrontmatter(
 
 export async function parseFile(path: string): Promise<L10NFile> {
   const contents = await Bun.file(path).text();
-  const { frontmatter, body, hasFrontmatter } =
-    splitTomlFrontmatter(contents);
+  const { frontmatter, body, hasFrontmatter } = splitTomlFrontmatter(contents);
 
   let config: L10NConfig = { llm: {}, translate: [] };
   if (hasFrontmatter) {
@@ -146,9 +147,7 @@ export function validateTranslateEntry(entry: Partial<TranslateEntry>): void {
     entry.frontmatter !== FRONTMATTER_PRESERVE &&
     entry.frontmatter !== FRONTMATTER_TRANSLATE
   ) {
-    throw new Error(
-      `translate entry "${sp}" has invalid frontmatter mode "${entry.frontmatter}"`,
-    );
+    throw new Error(`translate entry "${sp}" has invalid frontmatter mode "${entry.frontmatter}"`);
   }
 }
 
@@ -165,14 +164,10 @@ export function mergeLLM(
   if ((override.chat_completions_path ?? "").trim())
     out.chat_completions_path = override.chat_completions_path;
   if ((override.api_key ?? "").trim()) out.api_key = override.api_key;
-  if ((override.api_key_env ?? "").trim())
-    out.api_key_env = override.api_key_env;
-  if ((override.coordinator_model ?? "").trim())
-    out.coordinator_model = override.coordinator_model;
-  if ((override.translator_model ?? "").trim())
-    out.translator_model = override.translator_model;
-  if (override.temperature !== undefined)
-    out.temperature = override.temperature;
+  if ((override.api_key_env ?? "").trim()) out.api_key_env = override.api_key_env;
+  if ((override.coordinator_model ?? "").trim()) out.coordinator_model = override.coordinator_model;
+  if ((override.translator_model ?? "").trim()) out.translator_model = override.translator_model;
+  if (override.temperature !== undefined) out.temperature = override.temperature;
   if (override.max_tokens !== undefined) out.max_tokens = override.max_tokens;
   if (override.timeout_seconds) out.timeout_seconds = override.timeout_seconds;
 
@@ -210,21 +205,16 @@ function mergeAgentsList(
   return out;
 }
 
-function mergeAgentConfig(
-  base: AgentConfig,
-  override: Partial<AgentConfig>,
-): AgentConfig {
+function mergeAgentConfig(base: AgentConfig, override: Partial<AgentConfig>): AgentConfig {
   const out = { ...base };
   if ((override.provider ?? "").trim()) out.provider = override.provider!;
   if ((override.base_url ?? "").trim()) out.base_url = override.base_url!;
   if ((override.chat_completions_path ?? "").trim())
     out.chat_completions_path = override.chat_completions_path!;
   if ((override.api_key ?? "").trim()) out.api_key = override.api_key!;
-  if ((override.api_key_env ?? "").trim())
-    out.api_key_env = override.api_key_env!;
+  if ((override.api_key_env ?? "").trim()) out.api_key_env = override.api_key_env!;
   if ((override.model ?? "").trim()) out.model = override.model!;
-  if (override.temperature !== undefined)
-    out.temperature = override.temperature;
+  if (override.temperature !== undefined) out.temperature = override.temperature;
   if (override.max_tokens !== undefined) out.max_tokens = override.max_tokens;
   if (override.timeout_seconds) out.timeout_seconds = override.timeout_seconds;
   if (override.headers && Object.keys(override.headers).length > 0) {
@@ -259,8 +249,7 @@ export function applyAgentDefaults(cfg: AgentConfig): AgentConfig {
     case "openai":
       if (!(out.chat_completions_path ?? "").trim())
         out.chat_completions_path = "/chat/completions";
-      if (!(out.base_url ?? "").trim())
-        out.base_url = "https://api.openai.com/v1";
+      if (!(out.base_url ?? "").trim()) out.base_url = "https://api.openai.com/v1";
       if (!(out.api_key_env ?? "").trim()) out.api_key_env = "OPENAI_API_KEY";
       break;
     case "vertex":
@@ -268,21 +257,19 @@ export function applyAgentDefaults(cfg: AgentConfig): AgentConfig {
         out.chat_completions_path = "/chat/completions";
       break;
     case "anthropic":
-      if (!(out.chat_completions_path ?? "").trim())
-        out.chat_completions_path = "/v1/messages";
-      if (!(out.base_url ?? "").trim())
-        out.base_url = "https://api.anthropic.com";
-      if (!(out.api_key_env ?? "").trim())
-        out.api_key_env = "ANTHROPIC_API_KEY";
+      if (!(out.chat_completions_path ?? "").trim()) out.chat_completions_path = "/v1/messages";
+      if (!(out.base_url ?? "").trim()) out.base_url = "https://api.anthropic.com";
+      if (!(out.api_key_env ?? "").trim()) out.api_key_env = "ANTHROPIC_API_KEY";
       break;
   }
 
   return out;
 }
 
-export function resolveAgents(
-  cfg: Partial<LLMConfig>,
-): { coordinator: AgentConfig; translator: AgentConfig } {
+export function resolveAgents(cfg: Partial<LLMConfig>): {
+  coordinator: AgentConfig;
+  translator: AgentConfig;
+} {
   const agents = cfg.agent ?? [];
   const byRole: Record<string, Partial<AgentConfig>> = {};
   for (const agent of agents) {
@@ -319,22 +306,15 @@ export function resolveAgents(
   }
 
   // Fall through from coordinator
-  if (!(translator.provider ?? "").trim())
-    translator.provider = coordinator.provider;
-  if (!(translator.base_url ?? "").trim())
-    translator.base_url = coordinator.base_url;
+  if (!(translator.provider ?? "").trim()) translator.provider = coordinator.provider;
+  if (!(translator.base_url ?? "").trim()) translator.base_url = coordinator.base_url;
   if (!(translator.chat_completions_path ?? "").trim())
     translator.chat_completions_path = coordinator.chat_completions_path;
-  if (!(translator.api_key ?? "").trim())
-    translator.api_key = coordinator.api_key;
-  if (!(translator.api_key_env ?? "").trim())
-    translator.api_key_env = coordinator.api_key_env;
-  if (translator.temperature === undefined)
-    translator.temperature = coordinator.temperature;
-  if (translator.max_tokens === undefined)
-    translator.max_tokens = coordinator.max_tokens;
-  if (!translator.timeout_seconds)
-    translator.timeout_seconds = coordinator.timeout_seconds;
+  if (!(translator.api_key ?? "").trim()) translator.api_key = coordinator.api_key;
+  if (!(translator.api_key_env ?? "").trim()) translator.api_key_env = coordinator.api_key_env;
+  if (translator.temperature === undefined) translator.temperature = coordinator.temperature;
+  if (translator.max_tokens === undefined) translator.max_tokens = coordinator.max_tokens;
+  if (!translator.timeout_seconds) translator.timeout_seconds = coordinator.timeout_seconds;
   if (!translator.headers || Object.keys(translator.headers).length === 0) {
     translator.headers = { ...(coordinator.headers ?? {}) };
   } else {
