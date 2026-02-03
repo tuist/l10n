@@ -1,6 +1,21 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.9.0] - 2026-02-03
+
+### Features
+- feat: add Progressive Refinement section to homepage
+
+Explain that translations improve iteratively through human review cycles,
+drawing on prior art from Kaizen, PEMT, and successive approximation.
+Includes vertical timeline UI and translations for all 6 supported languages.
+
+https://claude.ai/code/session_014yfYCnE79UtYxh7rPrSNBs
+
+
+### Other
+- Merge pull request #6 from tuist/claude/add-translation-improvement-section-zgqqI
+
 ## [v0.8.2] - 2026-02-03
 
 ### Bug Fixes
