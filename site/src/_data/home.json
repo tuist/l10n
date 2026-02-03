@@ -42,8 +42,8 @@
     ]
   },
   "tools": {
-    "title": "First-party tools",
-    "intro": "Agents run a toolchain after every translation so output is correct before humans review.",
+    "title": "Tools",
+    "intro": "Agents use tools to automate verification after every translation.",
     "categories": [
       {
         "title": "Syntax validators",

@@ -159,17 +159,18 @@ func Translate(root string, opts TranslateOptions) error {
 
 			contextParts := planItem.source.ContextPartsFor(output.Lang)
 			translation, err := translator.Translate(context.Background(), agent.TranslationRequest{
-				Source:      string(planItem.sourceBytes),
-				TargetLang:  output.Lang,
-				Format:      planItem.source.Format,
-				Context:     strings.Join(contextParts, "\n\n"),
-				Preserve:    planItem.source.Entry.Preserve,
-				Frontmatter: planItem.source.Entry.Frontmatter,
-				CheckCmd:    pickCheckCmd(opts.CheckCmd, planItem.source.Entry.CheckCmd),
-				CheckCmds:   checkCmds,
-				Retries:     retries,
-				Coordinator: planItem.source.LLM.Coordinator,
-				Translator:  planItem.source.LLM.Translator,
+				Source:       string(planItem.sourceBytes),
+				TargetLang:   output.Lang,
+				Format:       planItem.source.Format,
+				Context:      strings.Join(contextParts, "\n\n"),
+				Preserve:     planItem.source.Entry.Preserve,
+				Frontmatter:  planItem.source.Entry.Frontmatter,
+				CheckCmd:     pickCheckCmd(opts.CheckCmd, planItem.source.Entry.CheckCmd),
+				CheckCmds:    checkCmds,
+				ToolReporter: reporter,
+				Retries:      retries,
+				Coordinator:  planItem.source.LLM.Coordinator,
+				Translator:   planItem.source.LLM.Translator,
 			})
 			if err != nil {
 				return fmt.Errorf("translate %s (%s): %w", planItem.source.SourcePath, output.Lang, err)

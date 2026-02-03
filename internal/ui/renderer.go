@@ -32,6 +32,7 @@ type styles struct {
 	warn    lipgloss.Style
 	error   lipgloss.Style
 	label   lipgloss.Style
+	tool    lipgloss.Style
 	summary lipgloss.Style
 }
 
@@ -57,6 +58,7 @@ func NewRenderer(opts Options) *Renderer {
 			warn:    lipgloss.NewStyle().Foreground(lipgloss.Color("208")).Bold(true),
 			error:   lipgloss.NewStyle().Foreground(lipgloss.Color("196")).Bold(true),
 			label:   lipgloss.NewStyle().Foreground(lipgloss.Color("244")),
+			tool:    lipgloss.NewStyle().Foreground(lipgloss.Color("105")).Bold(true),
 			summary: lipgloss.NewStyle().Bold(true),
 		},
 	}
@@ -64,6 +66,15 @@ func NewRenderer(opts Options) *Renderer {
 
 func (r *Renderer) Info(message string) {
 	r.println(r.styles.info.Render(message))
+}
+
+func (r *Renderer) Tool(name, detail string) {
+	label := r.styles.tool.Render("tool")
+	msg := label + " " + r.styles.label.Render(name)
+	if strings.TrimSpace(detail) != "" {
+		msg += ": " + detail
+	}
+	r.println(msg)
 }
 
 func (r *Renderer) Status(kind app.StatusKind, source, output, lang string) {

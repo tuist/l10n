@@ -26,6 +26,7 @@ type Options struct {
 	Preserve  []string
 	CheckCmd  string
 	CheckCmds map[string]string
+	Reporter  ToolReporter
 }
 
 var defaultPreserve = []string{"code_blocks", "inline_code", "urls", "placeholders"}
@@ -43,13 +44,23 @@ func (e ToolError) Unwrap() error {
 	return e.Err
 }
 
+type ToolReporter interface {
+	Tool(name, detail string)
+}
+
 func (c Checker) Validate(ctx context.Context, format plan.Format, output string, source string, opts Options) error {
+	if opts.Reporter != nil {
+		opts.Reporter.Tool("syntax-validator", "parse "+formatLabel(format))
+	}
 	if err := validateSyntax(format, output); err != nil {
 		return ToolError{Tool: "syntax-validator", Err: err}
 	}
 
 	preserveKinds := resolvePreserve(opts.Preserve)
 	if len(preserveKinds) > 0 {
+		if opts.Reporter != nil {
+			opts.Reporter.Tool("preserve-check", "verify preserved tokens")
+		}
 		if err := validatePreserve(output, source, preserveKinds); err != nil {
 			return ToolError{Tool: "preserve-check", Err: err}
 		}
@@ -57,6 +68,9 @@ func (c Checker) Validate(ctx context.Context, format plan.Format, output string
 
 	cmd := selectCheckCmd(format, opts.CheckCmd, opts.CheckCmds)
 	if cmd != "" {
+		if opts.Reporter != nil {
+			opts.Reporter.Tool("custom-command", "run check_cmd")
+		}
 		if err := c.runExternal(ctx, cmd, output); err != nil {
 			return ToolError{Tool: "custom-command", Err: err}
 		}
@@ -284,6 +298,21 @@ func hasQuotedString(line string) bool {
 		escaped = false
 	}
 	return count >= 2
+}
+
+func formatLabel(format plan.Format) string {
+	switch format {
+	case plan.FormatJSON:
+		return "JSON"
+	case plan.FormatYAML:
+		return "YAML"
+	case plan.FormatPO:
+		return "PO"
+	case plan.FormatMarkdown:
+		return "Markdown frontmatter"
+	default:
+		return string(format)
+	}
 }
 
 func selectCheckCmd(format plan.Format, fallback string, cmds map[string]string) string {

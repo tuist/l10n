@@ -15,6 +15,7 @@ type ProgressReporter interface {
 
 type Reporter interface {
 	Info(message string)
+	Tool(name, detail string)
 	Status(kind StatusKind, source, output, lang string)
 	StatusSummary(ok, stale, missing int)
 	CleanRemoved(path string)
@@ -26,6 +27,7 @@ type Reporter interface {
 type noopReporter struct{}
 
 func (n noopReporter) Info(string)                               {}
+func (n noopReporter) Tool(string, string)                       {}
 func (n noopReporter) Status(StatusKind, string, string, string) {}
 func (n noopReporter) StatusSummary(int, int, int)               {}
 func (n noopReporter) CleanRemoved(string)                       {}
