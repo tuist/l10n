@@ -32,6 +32,7 @@
 
 /* ——— Reset ——— */
 *, *::before, *::after { box-sizing: border-box; margin: 0; }
+html { overflow-x: hidden; }
 img { max-width: 100%; display: block; }
 
 /* ——— Base ——— */
@@ -326,6 +327,7 @@ p:last-child { margin-bottom: 0; }
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--transition), border-color var(--transition);
+  min-width: 0;
 }
 
 .step:hover {
@@ -373,6 +375,7 @@ p:last-child { margin-bottom: 0; }
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--transition), border-color var(--transition);
+  min-width: 0;
 }
 
 .tool-card:hover {
@@ -429,6 +432,8 @@ p:last-child { margin-bottom: 0; }
   border-radius: var(--radius-lg);
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  min-width: 0;
 }
 
 .config-card h3 {
@@ -452,6 +457,7 @@ pre[class*="language-"] {
   font-size: 0.82rem;
   line-height: 1.7;
   margin-top: 0.75rem;
+  max-width: 100%;
 }
 
 code[class*="language-"] {
@@ -539,6 +545,7 @@ code[class*="language-"] {
   background: var(--surface);
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--transition), border-color var(--transition);
+  min-width: 0;
 }
 
 .feature:hover {
@@ -969,6 +976,19 @@ code[class*="language-"] {
   .origin-card {
     padding: 1.25rem;
   }
+
+  .config-card {
+    padding: 1.25rem;
+  }
+
+  .config-card pre[class*="language-"] {
+    margin-left: -1.25rem;
+    margin-right: -1.25rem;
+    border-radius: 0;
+    padding: 1rem 1.25rem;
+    width: calc(100% + 2.5rem);
+    max-width: calc(100% + 2.5rem);
+  }
 }
 
 /* ——— Responsive: Small phones ——— */
@@ -987,6 +1007,14 @@ code[class*="language-"] {
 
   .step, .tool-card, .feature, .config-card {
     padding: 1.15rem;
+  }
+
+  .config-card pre[class*="language-"] {
+    margin-left: -1.15rem;
+    margin-right: -1.15rem;
+    padding: 0.85rem 1.15rem;
+    width: calc(100% + 2.3rem);
+    max-width: calc(100% + 2.3rem);
   }
 
   .code-block,
