@@ -122,10 +122,12 @@ export async function chat(
   if (provider === "anthropic") {
     return chatAnthropic(cfg, model, messages);
   }
-  if (provider === "local-claude") {
+  // local-claude, claude → Claude CLI
+  if (provider === "local-claude" || provider === "claude") {
     return chatLocalClaude(cfg, model, messages);
   }
-  if (provider === "local-codex") {
+  // local-codex, codex → Codex CLI
+  if (provider === "local-codex" || provider === "codex") {
     return chatLocalCodex(cfg, model, messages);
   }
   return chatOpenAI(cfg, model, messages);

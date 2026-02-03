@@ -177,6 +177,24 @@ describe("applyAgentDefaults", () => {
     expect(result.base_url).toBe("/usr/local/bin/claude");
   });
 
+  test("sets claude as alias for local-claude", () => {
+    const result = applyAgentDefaults({
+      role: "coordinator",
+      provider: "claude",
+      base_url: "",
+      chat_completions_path: "",
+      api_key: "",
+      api_key_env: "",
+      model: "sonnet",
+      headers: {},
+      timeout_seconds: 0,
+    });
+    expect(result.provider).toBe("claude");
+    expect(result.base_url).toBe("");
+    expect(result.api_key).toBe("");
+    expect(result.api_key_env).toBe("");
+  });
+
   test("sets local-codex defaults", () => {
     const result = applyAgentDefaults({
       role: "translator",
@@ -208,6 +226,24 @@ describe("applyAgentDefaults", () => {
       timeout_seconds: 60,
     });
     expect(result.base_url).toBe("/opt/codex/bin/codex");
+  });
+
+  test("sets codex as alias for local-codex", () => {
+    const result = applyAgentDefaults({
+      role: "translator",
+      provider: "codex",
+      base_url: "",
+      chat_completions_path: "",
+      api_key: "",
+      api_key_env: "",
+      model: "gpt-4",
+      headers: {},
+      timeout_seconds: 0,
+    });
+    expect(result.provider).toBe("codex");
+    expect(result.base_url).toBe("");
+    expect(result.api_key).toBe("");
+    expect(result.api_key_env).toBe("");
   });
 });
 
