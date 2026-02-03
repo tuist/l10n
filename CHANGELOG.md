@@ -1,6 +1,21 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.8.1] - 2026-02-03
+
+### Bug Fixes
+- fix: add proper right margin to code snippets on mobile
+
+Remove edge-to-edge negative margin approach for mobile code snippets
+and keep them within their container with consistent margins on both
+sides.
+
+https://claude.ai/code/session_01K2xSMD985sweMRxEm82KZM
+
+
+### Other
+- Merge pull request #4 from tuist/claude/fix-mobile-snippet-margin-KEY2k
+
 ## [v0.8.0] - 2026-02-03
 
 ### Features
