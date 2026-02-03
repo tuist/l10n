@@ -1,6 +1,22 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.11.0] - 2026-02-03
+
+### Features
+- feat: update blog post with install instructions and open source closing
+
+- Fix Maria Jose's GitHub handle to @mjsesalm
+- Add "Get started" section with CLI install and setup instructions
+- Replace closing with message about l10n being free, open source,
+  and treated with the same product-level care as Tuist
+
+https://claude.ai/code/session_01NodfLj4Tzcfw6zhssP8nky
+
+
+### Other
+- Merge pull request #8 from tuist/claude/add-blog-setup-instructions-fBn0o
+
 ## [v0.10.0] - 2026-02-03
 
 ### Bug Fixes
