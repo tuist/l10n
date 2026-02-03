@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/charmbracelet/bubbles/progress"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
 	"golang.org/x/term"
@@ -33,6 +32,7 @@ type styles struct {
 	error   lipgloss.Style
 	label   lipgloss.Style
 	tool    lipgloss.Style
+	run     lipgloss.Style
 	summary lipgloss.Style
 }
 
@@ -59,6 +59,7 @@ func NewRenderer(opts Options) *Renderer {
 			error:   lipgloss.NewStyle().Foreground(lipgloss.Color("196")).Bold(true),
 			label:   lipgloss.NewStyle().Foreground(lipgloss.Color("244")),
 			tool:    lipgloss.NewStyle().Foreground(lipgloss.Color("105")).Bold(true),
+			run:     lipgloss.NewStyle().Foreground(lipgloss.Color("117")).Bold(true),
 			summary: lipgloss.NewStyle().Bold(true),
 		},
 	}
@@ -120,10 +121,6 @@ func (r *Renderer) Progress(label string, total int) app.ProgressReporter {
 		total:   total,
 		label:   label,
 		enabled: r.isTTY,
-		model: progress.New(
-			progress.WithWidth(28),
-			progress.WithDefaultGradient(),
-		),
 	}
 }
 
@@ -137,7 +134,6 @@ func (r *Renderer) println(message string) {
 type progressReporter struct {
 	out     io.Writer
 	render  *Renderer
-	model   progress.Model
 	total   int
 	current int
 	label   string
@@ -166,9 +162,13 @@ func (p *progressReporter) renderLine() {
 		p.render.Info(line)
 		return
 	}
-	percent := float64(p.current) / float64(p.total)
-	bar := p.model.ViewAs(percent)
-	line := fmt.Sprintf("%s %d/%d %s", bar, p.current, p.total, truncate(p.label, 64))
+	percent := percentLabel(p.current, p.total)
+	label := truncate(p.label, 80)
+	if !strings.HasSuffix(label, "...") {
+		label += " ..."
+	}
+	status := p.render.styles.run.Render("running")
+	line := fmt.Sprintf("%s %s %d/%d %s", status, percent, p.current, p.total, label)
 	fmt.Fprintln(p.out, line)
 }
 
@@ -185,4 +185,18 @@ func truncate(value string, max int) string {
 		return value[:max]
 	}
 	return value[:max-3] + "..."
+}
+
+func percentLabel(current, total int) string {
+	if total <= 0 {
+		return "  0%"
+	}
+	percent := int(float64(current) / float64(total) * 100.0)
+	if percent < 0 {
+		percent = 0
+	}
+	if percent > 100 {
+		percent = 100
+	}
+	return fmt.Sprintf("%3d%%", percent)
 }
