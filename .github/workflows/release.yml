@@ -122,12 +122,12 @@ jobs:
           mkdir -p dist
           binary="l10n${{ matrix.ext }}"
           go build -trimpath -ldflags "-s -w" -o "dist/${binary}" ./cmd/l10n
-          tar -czf "dist/l10n-${{ needs.prepare.outputs.version }}-${{ matrix.triple }}.tar.gz" -C dist "${binary}"
+          tar -czf "dist/l10n-${{ matrix.triple }}.tar.gz" -C dist "${binary}"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: l10n-${{ matrix.triple }}
-          path: dist/l10n-${{ needs.prepare.outputs.version }}-${{ matrix.triple }}.tar.gz
+          path: dist/l10n-${{ matrix.triple }}.tar.gz
 
   release:
     name: Publish release
