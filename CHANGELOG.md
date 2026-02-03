@@ -1,6 +1,11 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.4.0] - 2026-02-03
+
+### Features
+- feat: tint progress lines
+
 ## [v0.3.0] - 2026-02-03
 
 ### Features
