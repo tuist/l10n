@@ -1,0 +1,6 @@
+{
+  "name": "l10n",
+  "tagline": "Localize like you ship software.",
+  "cta": "mise use github:tuist/l10n",
+  "repo": "github.com/tuist/l10n"
+}

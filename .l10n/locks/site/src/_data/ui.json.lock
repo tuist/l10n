@@ -1,0 +1,43 @@
+{
+  "source_path": "site/src/_data/ui.json",
+  "source_hash": "34c338f14e381ea00d787cad8abefabeb0f8f05f570d3a7b2d6323c39dd38004",
+  "outputs": {
+    "de": {
+      "path": "site/src/_data/i18n/de/ui.json",
+      "hash": "5823db279cac71f12145bcb826abb62e00f30e27a2ef42a94aeb9f62450a1f52",
+      "context_hash": "b415e6b1ae10c7baeaa156b2ac1e921ff2c8d3ea05d0b69828bf4d8df4925577",
+      "checked_at": "2026-02-03T15:05:07Z"
+    },
+    "es": {
+      "path": "site/src/_data/i18n/es/ui.json",
+      "hash": "543bb452659988bce55ab9a49dd7536e98a92b1a497ba9f66be0e918654518e7",
+      "context_hash": "b415e6b1ae10c7baeaa156b2ac1e921ff2c8d3ea05d0b69828bf4d8df4925577",
+      "checked_at": "2026-02-03T15:04:58Z"
+    },
+    "ja": {
+      "path": "site/src/_data/i18n/ja/ui.json",
+      "hash": "10dc6a3ae4c4b52dc5f8e74311cfde44075d6e5b0907f6dfebaca82f4fe3c787",
+      "context_hash": "b415e6b1ae10c7baeaa156b2ac1e921ff2c8d3ea05d0b69828bf4d8df4925577",
+      "checked_at": "2026-02-03T15:05:26Z"
+    },
+    "ko": {
+      "path": "site/src/_data/i18n/ko/ui.json",
+      "hash": "b16a212b6e0e6e7e5c2d924e0587ed4fd69e7ba681b74480e216dd6070e72b32",
+      "context_hash": "b415e6b1ae10c7baeaa156b2ac1e921ff2c8d3ea05d0b69828bf4d8df4925577",
+      "checked_at": "2026-02-03T15:05:17Z"
+    },
+    "zh-Hans": {
+      "path": "site/src/_data/i18n/zh-Hans/ui.json",
+      "hash": "ac21fe3fcad4e6a4fa544d5fffb6cd06f459a4515d0de8f7a1a73f851fbdb066",
+      "context_hash": "b415e6b1ae10c7baeaa156b2ac1e921ff2c8d3ea05d0b69828bf4d8df4925577",
+      "checked_at": "2026-02-03T15:05:34Z"
+    },
+    "zh-Hant": {
+      "path": "site/src/_data/i18n/zh-Hant/ui.json",
+      "hash": "f6bb6b74817a3c7ef32fdd153a207d79fd8c12b477062c63581da8d8240ba065",
+      "context_hash": "b415e6b1ae10c7baeaa156b2ac1e921ff2c8d3ea05d0b69828bf4d8df4925577",
+      "checked_at": "2026-02-03T15:05:42Z"
+    }
+  },
+  "updated_at": "2026-02-03T15:05:42Z"
+}

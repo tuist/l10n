@@ -1,0 +1,70 @@
+{% set ui = "ui" | localizedData(locale or 'en') %}
+<!doctype html>
+<html lang="{{ locale or 'en' }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ title }} · {{ site.name }}</title>
+    <meta name="description" content="{{ description or site.tagline }}" />
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="logo" href="{% if locale and locale != 'en' %}/{{ locale }}/{% else %}/{% endif %}">l10n</a>
+        <nav class="nav-links">
+          <a href="#how">{{ ui.nav.how }}</a>
+          <a href="#config">{{ ui.nav.config }}</a>
+          <a href="#features">{{ ui.nav.features }}</a>
+          <a href="#updates">{{ ui.nav.updates }}</a>
+        </nav>
+        <div class="locale-dropdown">
+          <button class="locale-toggle" aria-expanded="false" aria-haspopup="true">
+            {{ locales[(locale or 'en')] }}
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <ul class="locale-menu" role="menu">
+            {% for code, label in locales %}
+            <li role="none"><a role="menuitem" class="locale-option {% if (locale or 'en') == code %}active{% endif %}" href="{{ page | localeUrl(code, locale) }}">{{ label }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      {{ content | safe }}
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <div class="logo">l10n</div>
+          <p>{{ ui.footer.blurb_prefix }}<a href="https://tuist.dev" class="footer-link">{{ ui.footer.blurb_link_label }}</a>{{ ui.footer.blurb_suffix }}</p>
+        </div>
+        <div>
+          <h4>{{ ui.footer.cta_title }}</h4>
+          <code class="install-cmd">{{ site.cta }}</code>
+          <br/>
+          <a href="https://{{ site.repo }}" class="footer-link">{{ site.repo }}</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function() {
+        var dd = document.querySelector('.locale-dropdown');
+        var btn = dd.querySelector('.locale-toggle');
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          dd.classList.toggle('open');
+          btn.setAttribute('aria-expanded', dd.classList.contains('open'));
+        });
+        document.addEventListener('click', function() {
+          dd.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      })();
+    </script>
+  </body>
+</html>

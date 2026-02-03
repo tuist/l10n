@@ -1,0 +1,5 @@
+/site/node_modules
+/site/dist
+/.l10n/tmp
+/l10n
+.env

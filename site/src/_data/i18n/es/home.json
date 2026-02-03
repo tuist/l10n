@@ -1,0 +1,116 @@
+{
+  "meta": {
+    "title": "l10n · Localiza como lanzas software",
+    "description": "Mantén la localización en el repositorio, valida con tus herramientas y lanza más rápido con borradores generados por LLM."
+  },
+  "hero": {
+    "badge": "Herramienta CLI open source",
+    "title": "Localización agéntica para tu codebase",
+    "lead": "l10n traduce tu contenido con LLMs, lo mantiene todo en el repositorio, valida la salida localmente y genera borradores que tu equipo puede revisar sin depender de plataformas externas.",
+    "cta_primary": "Empezar",
+    "cta_secondary": "Cómo funciona"
+  },
+  "origin": {
+    "title": "Por qué Tuist creó esto",
+    "intro": {
+      "prefix": "Probamos ",
+      "crowdin": "Crowdin",
+      "middle": " y ",
+      "weblate": "Weblate",
+      "suffix": ". La indirección de exportar e importar contenido nos ralentizaba, y no podíamos ejecutar nuestra propia validación en el proceso. Queríamos el mismo flujo que usamos para código: cambiar, probar, revisar, lanzar."
+    },
+    "note": "Ahora las traducciones se generan en su lugar, se verifican con tus herramientas y solo las revisan humanos cuando es necesario."
+  },
+  "how": {
+    "title": "Cómo funciona",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Da contexto a los agentes",
+        "text": "Añade archivos de contexto L10N.md junto a tu contenido. l10n rastrea sus dependencias para que cuando el contexto o el contenido cambie, solo se regeneren las traducciones afectadas."
+      },
+      {
+        "number": "02",
+        "title": "Elige tus modelos",
+        "text": "Selecciona un modelo para coordinar la sesión agéntica y otro para traducir con precisión. Usa cualquier endpoint compatible con OpenAI, Vertex AI o tu propio modelo hospedado."
+      },
+      {
+        "number": "03",
+        "title": "Los agentes validan su propio trabajo",
+        "text": "Los agentes tienen acceso a verificaciones de sintaxis integradas y comandos personalizados que defines tú. Ejecutan la validación después de cada traducción y reintentan en caso de errores, así la salida es correcta antes de que la revises."
+      }
+    ]
+  },
+  "config": {
+    "title": "La configuración vive en tu repositorio",
+    "l10n": {
+      "title": "L10N.md",
+      "text": "Define fuentes de traducción, destinos y patrones de salida en frontmatter TOML."
+    },
+    "cli": {
+      "title": "Comandos CLI",
+      "text": "Traduce, valida y rastrea qué necesita actualizarse.",
+      "items": [
+        {
+          "cmd": "l10n translate",
+          "desc": "Genera traducciones"
+        },
+        {
+          "cmd": "l10n status",
+          "desc": "Reporta salidas faltantes o desactualizadas"
+        },
+        {
+          "cmd": "l10n check",
+          "desc": "Valida la sintaxis de las salidas"
+        },
+        {
+          "cmd": "l10n clean",
+          "desc": "Elimina salidas de traducción desactualizadas"
+        }
+      ],
+      "note_prefix": "Usa",
+      "note_suffix": "para retraducir todo."
+    }
+  },
+  "features": {
+    "title": "Diseñado para flujos de trabajo reales",
+    "items": [
+      {
+        "title": "Hashing consciente del contexto",
+        "text": "Las traducciones se actualizan cuando cambia el contenido fuente o el contexto L10N.md ancestro."
+      },
+      {
+        "title": "Hooks de validación",
+        "text": "Verificaciones de sintaxis JSON, YAML y PO, más comandos de lint externos opcionales."
+      },
+      {
+        "title": "Pipeline de agentes",
+        "text": "Modelos separados de coordinador y traductor con reintento en errores de validación."
+      },
+      {
+        "title": "Listo para revisión humana",
+        "text": "Genera borradores rápido, revisa cuando sea necesario y mantén todo en Git."
+      }
+    ]
+  },
+  "faq": {
+    "title": "FAQ",
+    "items": [
+      {
+        "q": "¿En qué se diferencia de las herramientas de traducción tradicionales?",
+        "a": "Las herramientas tradicionales dependen de memorias de traducción, bases de datos estáticas de traducciones pasadas que se emparejan por similitud. l10n las reemplaza con contexto LLM como memoria: archivos de contexto que los agentes leen, de los que aprenden y que tu equipo puede iterar con el tiempo. En lugar de buscar una coincidencia aproximada, los agentes entienden el tono, la terminología y las convenciones de tu producto. Y así como los desarrolladores validan cambios de código compilando o ejecutando linters, los agentes validan sus traducciones usando las mismas herramientas en tu entorno. Ejecútalo en CI o localmente, y los agentes usarán tus linters, compiladores y validadores para corregir su propia salida."
+      },
+      {
+        "q": "¿Necesito traer mis propios modelos?",
+        "a": "Sí. l10n es una herramienta CLI, no un servicio hospedado. Lo apuntas a cualquier endpoint compatible con OpenAI, Vertex AI o tu propio modelo. Tú controlas el costo, los datos y la calidad."
+      },
+      {
+        "q": "¿Cómo revisan los humanos las traducciones?",
+        "a": "Actualmente, los revisores verifican el contenido traducido mediante pull requests y diffs, y pueden actualizar los archivos de contexto para forzar una retraducción cuando sea necesario. En el futuro, esperamos que se integren al proceso ejecutando l10n localmente, de la misma manera que los desarrolladores ya trabajan con agentes de código como Codex."
+      }
+    ]
+  },
+  "updates": {
+    "title": "Actualizaciones"
+  }
+}

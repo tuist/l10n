@@ -1,0 +1,14 @@
+{
+  "nav": {
+    "how": "Cómo funciona",
+    "config": "Configuración",
+    "features": "Características",
+    "updates": "Novedades"
+  },
+  "footer": {
+    "blurb_prefix": "Licencia MIT. Desarrollado por ",
+    "blurb_link_label": "Tuist",
+    "blurb_suffix": " para equipos que despliegan rápido.",
+    "cta_title": "Comenzar"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "nav": {
+    "how": "How it works",
+    "config": "Config",
+    "features": "Features",
+    "updates": "Updates"
+  },
+  "footer": {
+    "blurb_prefix": "MIT licensed. Built by ",
+    "blurb_link_label": "Tuist",
+    "blurb_suffix": " for teams that ship fast.",
+    "cta_title": "Get started"
+  }
+}

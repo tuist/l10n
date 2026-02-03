@@ -1,0 +1,151 @@
+<!-- DEBUG locale={{ locale }} localeCode={{ localeCode }} -->
+{% set home = "home" | localizedData(locale) %}
+{% set ui = "ui" | localizedData(locale) %}
+<section class="section hero">
+  <div class="container">
+    <div class="hero-content reveal">
+      <div class="badge">{{ home.hero.badge }}</div>
+      <h1>{{ home.hero.title }}</h1>
+      <p class="lead">{{ home.hero.lead }}</p>
+      <div class="cta-row">
+        <a class="button primary" href="#config">{{ home.hero.cta_primary }}</a>
+        <a class="button secondary" href="#how">{{ home.hero.cta_secondary }}</a>
+      </div>
+    </div>
+    <div class="origin-card reveal">
+      <h3>
+        <img src="https://tuist.dev/marketing/images/components/navbar/logo.webp" alt="Tuist" class="origin-logo" />
+        {{ home.origin.title }}
+      </h3>
+      <p>
+        {{ home.origin.intro.prefix }}
+        <a href="https://crowdin.com">{{ home.origin.intro.crowdin }}</a>
+        {{ home.origin.intro.middle }}
+        <a href="https://weblate.org">{{ home.origin.intro.weblate }}</a>
+        {{ home.origin.intro.suffix }}
+      </p>
+      <p class="muted">{{ home.origin.note }}</p>
+    </div>
+    <div class="geo-accent" aria-hidden="true">
+      <svg viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="40" y="40" width="120" height="120" rx="8" stroke="#7c3aed" stroke-width="1.5" opacity="0.2" />
+        <rect x="100" y="100" width="120" height="120" rx="8" stroke="#f59e0b" stroke-width="1.5" opacity="0.15" />
+        <rect x="160" y="60" width="100" height="100" rx="8" stroke="#059669" stroke-width="1.5" opacity="0.12" />
+        <circle cx="80" cy="260" r="30" stroke="#7c3aed" stroke-width="1" opacity="0.1" />
+        <circle cx="260" cy="200" r="20" stroke="#f59e0b" stroke-width="1" opacity="0.1" />
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="section">
+  <div class="container">
+    <h2 class="reveal">{{ home.how.title }}</h2>
+    <div class="steps">
+      {% for step in home.how.steps %}
+      <div class="step reveal">
+        <div class="step-number">{{ step.number }}</div>
+        <strong>{{ step.title }}</strong>
+        <p>{{ step.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="config" class="section">
+  <div class="container">
+    <h2 class="reveal">{{ home.config.title }}</h2>
+    <div class="config-grid">
+      <div class="config-card reveal">
+        <h3>{{ home.config.l10n.title }}</h3>
+        <p>{{ home.config.l10n.text }}</p>
+        {% highlight "toml" %}
++++
+[[translate]]
+source = "site/src/_data/home.json"
+targets = ["es", "de", "ko", "ja", "zh-Hans", "zh-Hant"]
+output = "site/src/_data/i18n/{lang}/{basename}.{ext}"
++++
+
+# Context for the translating agent...
+{% endhighlight %}
+      </div>
+      <div class="config-card reveal">
+        <h3>{{ home.config.cli.title }}</h3>
+        <p>{{ home.config.cli.text }}</p>
+        <ul class="cli-list">
+          {% for item in home.config.cli.items %}
+          <li class="cli-item">
+            <span class="cli-cmd">{{ item.cmd }}</span>
+            <span class="cli-desc">{{ item.desc }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+        <p class="muted" style="margin-top: 1rem; font-size: 0.85rem;">
+          {{ home.config.cli.note_prefix }} <span class="mono">--force</span> {{ home.config.cli.note_suffix }}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="section">
+  <div class="container">
+    <h2 class="reveal">{{ home.features.title }}</h2>
+    <div class="feature-grid">
+      <div class="feature reveal">
+        <div class="feature-icon violet">#</div>
+        <h3>{{ home.features.items[0].title }}</h3>
+        <p>{{ home.features.items[0].text }}</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon amber">&#10003;</div>
+        <h3>{{ home.features.items[1].title }}</h3>
+        <p>{{ home.features.items[1].text }}</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon green">&#187;</div>
+        <h3>{{ home.features.items[2].title }}</h3>
+        <p>{{ home.features.items[2].text }}</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon violet">&#182;</div>
+        <h3>{{ home.features.items[3].title }}</h3>
+        <p>{{ home.features.items[3].text }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="reveal">{{ home.faq.title }}</h2>
+    <div class="faq">
+      {% for item in home.faq.items %}
+      <div class="faq-item reveal">
+        <strong>{{ item.q }}</strong>
+        <p>{{ item.a }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="updates" class="section">
+  <div class="container">
+    <h2 class="reveal">{{ home.updates.title }}</h2>
+    {% set posts = collections.posts | postsByLocale(locale) %}
+    <div class="blog-list">
+      {% for post in posts %}
+      <article class="blog-card reveal">
+        <a href="{{ post.url }}">
+          <p class="meta">{{ post.date | readableDate(locale) }}</p>
+          <h3>{{ post.data.title }}</h3>
+          <p class="summary">{{ post.data.summary }}</p>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>

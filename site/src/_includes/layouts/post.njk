@@ -1,0 +1,16 @@
+---
+layout: layouts/base.njk
+---
+<article class="post">
+  <header class="section post-hero">
+    <div class="container">
+      <div class="badge">Update</div>
+      <h1>{{ title }}</h1>
+      <p class="lead">{{ summary }}</p>
+      <p class="meta">{{ date | readableDate(locale) }}</p>
+    </div>
+  </header>
+  <div class="container post-body">
+    {{ content | safe }}
+  </div>
+</article>

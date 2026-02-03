@@ -1,0 +1,14 @@
+{
+  "nav": {
+    "how": "運作方式",
+    "config": "設定",
+    "features": "功能",
+    "updates": "更新"
+  },
+  "footer": {
+    "blurb_prefix": "MIT 授權。由 ",
+    "blurb_link_label": "Tuist",
+    "blurb_suffix": " 為快速交付的團隊打造。",
+    "cta_title": "開始使用"
+  }
+}

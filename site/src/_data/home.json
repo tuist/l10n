@@ -1,0 +1,116 @@
+{
+  "meta": {
+    "title": "l10n \u00b7 Localize like you ship software",
+    "description": "Keep localization in-repo, validate with your tooling, and ship faster with LLM drafts."
+  },
+  "hero": {
+    "badge": "Open source CLI tool",
+    "title": "Agentic localization for your codebase",
+    "lead": "l10n translates your content with LLMs, keeps everything in-repo, validates output locally, and generates drafts your team can review without the round-trip of external platforms.",
+    "cta_primary": "Get started",
+    "cta_secondary": "How it works"
+  },
+  "origin": {
+    "title": "Why Tuist built this",
+    "intro": {
+      "prefix": "We tried ",
+      "crowdin": "Crowdin",
+      "middle": " and ",
+      "weblate": "Weblate",
+      "suffix": ". The indirection of exporting and importing content slowed us down, and we could not run our own validation in the loop. We wanted the same workflow we use for code: change, test, review, ship."
+    },
+    "note": "Now translations are generated in place, checked by your tooling, and reviewed by humans only when it matters."
+  },
+  "how": {
+    "title": "How it works",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Give agents context",
+        "text": "Add L10N.md context files alongside your content. l10n tracks their dependency so when context or content changes, only the affected translations get regenerated."
+      },
+      {
+        "number": "02",
+        "title": "Choose your models",
+        "text": "Pick one model to coordinate the agentic session and another to translate accurately. Use any OpenAI-compatible endpoint, Vertex AI, or your own hosted model."
+      },
+      {
+        "number": "03",
+        "title": "Agents validate their own work",
+        "text": "Agents have access to built-in syntax checks and custom commands you define. They run validation after each translation and retry on errors, so output is correct before you review."
+      }
+    ]
+  },
+  "config": {
+    "title": "Configuration lives in your repo",
+    "l10n": {
+      "title": "L10N.md",
+      "text": "Define translation sources, targets, and output patterns in TOML frontmatter."
+    },
+    "cli": {
+      "title": "CLI commands",
+      "text": "Translate, validate, and track what needs updating.",
+      "items": [
+        {
+          "cmd": "l10n translate",
+          "desc": "Generate translations"
+        },
+        {
+          "cmd": "l10n status",
+          "desc": "Report missing or stale outputs"
+        },
+        {
+          "cmd": "l10n check",
+          "desc": "Validate output syntax"
+        },
+        {
+          "cmd": "l10n clean",
+          "desc": "Remove stale translation outputs"
+        }
+      ],
+      "note_prefix": "Use",
+      "note_suffix": "to re-translate everything."
+    }
+  },
+  "features": {
+    "title": "Built for real workflows",
+    "items": [
+      {
+        "title": "Context-aware hashing",
+        "text": "Translations update when source content or ancestor L10N.md context changes."
+      },
+      {
+        "title": "Validation hooks",
+        "text": "JSON, YAML, and PO syntax checks plus optional external lint commands."
+      },
+      {
+        "title": "Agent pipeline",
+        "text": "Separate coordinator and translator models with retry on validation errors."
+      },
+      {
+        "title": "Human review ready",
+        "text": "Generate drafts fast, review when needed, and keep everything in Git."
+      }
+    ]
+  },
+  "faq": {
+    "title": "FAQ",
+    "items": [
+      {
+        "q": "How is this different from traditional translation tools?",
+        "a": "Traditional tools rely on translation memories, static databases of past translations that are matched by similarity. l10n replaces that with LLM context as memory: context files that agents read, learn from, and that your team can iterate over time. Instead of looking up a fuzzy match, agents understand your product's tone, terminology, and conventions. And just like developers validate code changes by compiling or linting, agents validate their translations using the same tools in your environment. Run it in CI or locally, and agents will use your linters, compilers, and validators to correct their own output."
+      },
+      {
+        "q": "Do I need to bring my own models?",
+        "a": "Yes. l10n is a CLI tool, not a hosted service. You point it at any OpenAI-compatible endpoint, Vertex AI, or your own model. You control the cost, the data, and the quality."
+      },
+      {
+        "q": "How do humans review translations?",
+        "a": "Today, reviewers check translated content through pull requests and diffs, and can update context files to force re-translation when needed. In the future, we expect them to become part of the loop by running l10n locally, the same way developers already work with coding agents like Codex."
+      }
+    ]
+  },
+  "updates": {
+    "title": "Updates"
+  }
+}

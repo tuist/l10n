@@ -1,0 +1,116 @@
+{
+  "meta": {
+    "title": "l10n · Lokalisierung wie Software-Deployment",
+    "description": "Lokalisierung im Repository behalten, mit Ihren Tools validieren und mit LLM-Entwürfen schneller ausliefern."
+  },
+  "hero": {
+    "badge": "Open-Source-CLI-Tool",
+    "title": "Agentenbasierte Lokalisierung für Ihre Codebase",
+    "lead": "l10n übersetzt Ihre Inhalte mit LLMs, behält alles im Repository, validiert Ausgaben lokal und generiert Entwürfe, die Ihr Team prüfen kann – ohne den Umweg über externe Plattformen.",
+    "cta_primary": "Loslegen",
+    "cta_secondary": "So funktioniert es"
+  },
+  "origin": {
+    "title": "Warum Tuist das entwickelt hat",
+    "intro": {
+      "prefix": "Wir haben ",
+      "crowdin": "Crowdin",
+      "middle": " und ",
+      "weblate": "Weblate",
+      "suffix": " ausprobiert. Der Umweg über Export und Import von Inhalten hat uns ausgebremst, und wir konnten unsere eigene Validierung nicht einbinden. Wir wollten denselben Workflow wie für Code: ändern, testen, reviewen, ausliefern."
+    },
+    "note": "Jetzt werden Übersetzungen direkt generiert, von Ihren Tools geprüft und nur bei Bedarf von Menschen reviewt."
+  },
+  "how": {
+    "title": "So funktioniert es",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Agenten Kontext geben",
+        "text": "Fügen Sie L10N.md-Kontextdateien neben Ihren Inhalten hinzu. l10n trackt deren Abhängigkeiten – wenn sich Kontext oder Inhalt ändert, werden nur die betroffenen Übersetzungen neu generiert."
+      },
+      {
+        "number": "02",
+        "title": "Modelle auswählen",
+        "text": "Wählen Sie ein Modell zur Koordination der Agenten-Session und ein weiteres für präzise Übersetzungen. Nutzen Sie jeden OpenAI-kompatiblen Endpoint, Vertex AI oder Ihr eigenes gehostetes Modell."
+      },
+      {
+        "number": "03",
+        "title": "Agenten validieren ihre eigene Arbeit",
+        "text": "Agenten haben Zugriff auf eingebaute Syntaxprüfungen und benutzerdefinierte Befehle. Sie führen nach jeder Übersetzung eine Validierung durch und wiederholen bei Fehlern – so ist die Ausgabe korrekt, bevor Sie reviewen."
+      }
+    ]
+  },
+  "config": {
+    "title": "Konfiguration liegt in Ihrem Repository",
+    "l10n": {
+      "title": "L10N.md",
+      "text": "Definieren Sie Übersetzungsquellen, Zielsprachen und Ausgabemuster im TOML-Frontmatter."
+    },
+    "cli": {
+      "title": "CLI-Befehle",
+      "text": "Übersetzen, validieren und verfolgen, was aktualisiert werden muss.",
+      "items": [
+        {
+          "cmd": "l10n translate",
+          "desc": "Übersetzungen generieren"
+        },
+        {
+          "cmd": "l10n status",
+          "desc": "Fehlende oder veraltete Ausgaben melden"
+        },
+        {
+          "cmd": "l10n check",
+          "desc": "Ausgabesyntax validieren"
+        },
+        {
+          "cmd": "l10n clean",
+          "desc": "Veraltete Übersetzungsausgaben entfernen"
+        }
+      ],
+      "note_prefix": "Verwenden Sie",
+      "note_suffix": "um alles neu zu übersetzen."
+    }
+  },
+  "features": {
+    "title": "Für echte Workflows entwickelt",
+    "items": [
+      {
+        "title": "Kontextbewusstes Hashing",
+        "text": "Übersetzungen werden aktualisiert, wenn sich Quellinhalte oder übergeordnete L10N.md-Kontexte ändern."
+      },
+      {
+        "title": "Validierungs-Hooks",
+        "text": "JSON-, YAML- und PO-Syntaxprüfungen plus optionale externe Lint-Befehle."
+      },
+      {
+        "title": "Agenten-Pipeline",
+        "text": "Separate Koordinator- und Übersetzer-Modelle mit Wiederholung bei Validierungsfehlern."
+      },
+      {
+        "title": "Bereit für menschliches Review",
+        "text": "Entwürfe schnell generieren, bei Bedarf reviewen und alles in Git behalten."
+      }
+    ]
+  },
+  "faq": {
+    "title": "FAQ",
+    "items": [
+      {
+        "q": "Wie unterscheidet sich das von traditionellen Übersetzungstools?",
+        "a": "Traditionelle Tools basieren auf Translation Memories – statischen Datenbanken vergangener Übersetzungen, die nach Ähnlichkeit abgeglichen werden. l10n ersetzt das durch LLM-Kontext als Gedächtnis: Kontextdateien, die Agenten lesen, aus denen sie lernen und die Ihr Team iterativ verbessern kann. Statt einen ungefähren Treffer nachzuschlagen, verstehen Agenten den Ton, die Terminologie und die Konventionen Ihres Produkts. Und genau wie Entwickler Code-Änderungen durch Kompilieren oder Linting validieren, validieren Agenten ihre Übersetzungen mit denselben Tools in Ihrer Umgebung. Führen Sie es in CI oder lokal aus – Agenten nutzen Ihre Linter, Compiler und Validatoren, um ihre eigene Ausgabe zu korrigieren."
+      },
+      {
+        "q": "Muss ich eigene Modelle mitbringen?",
+        "a": "Ja. l10n ist ein CLI-Tool, kein gehosteter Service. Sie verweisen es auf jeden OpenAI-kompatiblen Endpoint, Vertex AI oder Ihr eigenes Modell. Sie kontrollieren die Kosten, die Daten und die Qualität."
+      },
+      {
+        "q": "Wie reviewen Menschen Übersetzungen?",
+        "a": "Aktuell prüfen Reviewer übersetzte Inhalte über Pull Requests und Diffs und können Kontextdateien aktualisieren, um bei Bedarf eine Neuübersetzung zu erzwingen. In Zukunft erwarten wir, dass sie Teil des Workflows werden, indem sie l10n lokal ausführen – so wie Entwickler bereits mit Coding-Agenten wie Codex arbeiten."
+      }
+    ]
+  },
+  "updates": {
+    "title": "Updates"
+  }
+}
