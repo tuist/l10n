@@ -285,6 +285,7 @@ async function chatLocalClaude(
 ): Promise<string> {
   const cliPath = cfg.base_url?.trim() || "claude";
 
+  // Build prompt from messages
   const systemParts: string[] = [];
   const userMessages: string[] = [];
   for (const msg of messages) {
@@ -300,7 +301,7 @@ async function chatLocalClaude(
         userMessages.push(`[ASSISTANT]: ${msg.content}`);
         break;
       default:
-        throw new Error(`unsupported message role "${msg.role}" for local-claude`);
+        throw new Error(`unsupported message role "${msg.role}" for claude provider`);
     }
   }
 
@@ -308,9 +309,16 @@ async function chatLocalClaude(
     throw new Error("llm request requires user messages");
   }
 
-  const prompt = [
-    ...systemParts.map((s) => `[SYSTEM]: ${s}`),
-    ...userMessages.map((m) => m.startsWith("[ASSISTANT]:") ? m : `[USER]: ${m}`),
+  // Build the full prompt for Claude CLI
+  const fullPrompt = [
+    ...systemParts.map((s) => `## System\n${s}`),
+    ...userMessages.map((m, i) => {
+      const isAssistant = m.startsWith("[ASSISTANT]:");
+      const content = isAssistant ? m.slice(13) : m;
+      return isAssistant
+        ? `## Assistant\n${content}`
+        : `## User\n${content}`;
+    }),
   ].join("\n\n");
 
   const timeout = cfg.timeout_seconds ? cfg.timeout_seconds * 1000 : DEFAULT_TIMEOUT_MS;
@@ -318,25 +326,41 @@ async function chatLocalClaude(
   const timer = setTimeout(() => controller.abort(), timeout);
 
   try {
+    // Claude CLI: --print for non-interactive, --output-format json for JSON output
     const proc = Bun.spawn({
-      cmd: [cliPath, "ai", "-p", "--no-think"],
+      cmd: [cliPath, "--print", "--output-format", "json", "--model", model],
       stdin: "pipe",
       stdout: "pipe",
       stderr: "pipe",
       timeout,
+      env: {
+        ...process.env,
+        // Disable tools for translation-only use
+        CLAUDE_ALLOW_TOOLS: "",
+      },
     });
 
-    await proc.stdin.write(prompt);
+    await proc.stdin.write(fullPrompt);
     proc.stdin.close();
 
-    const output = await new Response(proc.stdout).text();
-    const error = await new Response(proc.stderr).text();
+    const stdout = await new Response(proc.stdout).text();
+    const stderr = await new Response(proc.stderr).text();
 
     if (proc.exitCode !== 0) {
-      throw new Error(`claude CLI error (exit ${proc.exitCode}): ${error || "unknown error"}`);
+      throw new Error(`claude CLI error (exit ${proc.exitCode}): ${stderr || "unknown error"}`);
     }
 
-    return output.trim();
+    // Parse JSON output from Claude CLI
+    let result: { content?: { text?: string }[] };
+    try {
+      result = JSON.parse(stdout);
+    } catch {
+      // If not valid JSON, return raw output
+      return stdout.trim();
+    }
+
+    const text = result.content?.map((b) => b.text || "").join("") || "";
+    return text.trim();
   } finally {
     clearTimeout(timer);
   }
@@ -349,6 +373,7 @@ async function chatLocalCodex(
 ): Promise<string> {
   const cliPath = cfg.base_url?.trim() || "codex";
 
+  // Build prompt from messages
   const systemParts: string[] = [];
   const userMessages: string[] = [];
   for (const msg of messages) {
@@ -364,7 +389,7 @@ async function chatLocalCodex(
         userMessages.push(`[ASSISTANT]: ${msg.content}`);
         break;
       default:
-        throw new Error(`unsupported message role "${msg.role}" for local-codex`);
+        throw new Error(`unsupported message role "${msg.role}" for codex provider`);
     }
   }
 
@@ -372,9 +397,16 @@ async function chatLocalCodex(
     throw new Error("llm request requires user messages");
   }
 
-  const prompt = [
-    ...systemParts.map((s) => `[SYSTEM]: ${s}`),
-    ...userMessages.map((m) => m.startsWith("[ASSISTANT]:") ? m : `[USER]: ${m}`),
+  // Build the full prompt for Codex CLI
+  const fullPrompt = [
+    ...systemParts.map((s) => `## System\n${s}`),
+    ...userMessages.map((m, i) => {
+      const isAssistant = m.startsWith("[ASSISTANT]:");
+      const content = isAssistant ? m.slice(13) : m;
+      return isAssistant
+        ? `## Assistant\n${content}`
+        : `## User\n${content}`;
+    }),
   ].join("\n\n");
 
   const timeout = cfg.timeout_seconds ? cfg.timeout_seconds * 1000 : DEFAULT_TIMEOUT_MS;
@@ -382,25 +414,26 @@ async function chatLocalCodex(
   const timer = setTimeout(() => controller.abort(), timeout);
 
   try {
+    // Codex CLI: `codex exec` for non-interactive use
     const proc = Bun.spawn({
-      cmd: [cliPath, "complete", "--prompt"],
+      cmd: [cliPath, "exec"],
       stdin: "pipe",
       stdout: "pipe",
       stderr: "pipe",
       timeout,
     });
 
-    await proc.stdin.write(prompt);
+    await proc.stdin.write(fullPrompt);
     proc.stdin.close();
 
-    const output = await new Response(proc.stdout).text();
-    const error = await new Response(proc.stderr).text();
+    const stdout = await new Response(proc.stdout).text();
+    const stderr = await new Response(proc.stderr).text();
 
     if (proc.exitCode !== 0) {
-      throw new Error(`codex CLI error (exit ${proc.exitCode}): ${error || "unknown error"}`);
+      throw new Error(`codex CLI error (exit ${proc.exitCode}): ${stderr || "unknown error"}`);
     }
 
-    return output.trim();
+    return stdout.trim();
   } finally {
     clearTimeout(timer);
   }
