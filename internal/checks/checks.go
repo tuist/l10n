@@ -27,6 +27,9 @@ type Options struct {
 	CheckCmd  string
 	CheckCmds map[string]string
 	Reporter  ToolReporter
+	Label     string
+	Current   int
+	Total     int
 }
 
 var defaultPreserve = []string{"code_blocks", "inline_code", "urls", "placeholders"}
@@ -46,9 +49,13 @@ func (e ToolError) Unwrap() error {
 
 type ToolReporter interface {
 	Tool(name, detail string)
+	Activity(stage string, current, total int, label string)
 }
 
 func (c Checker) Validate(ctx context.Context, format plan.Format, output string, source string, opts Options) error {
+	if opts.Reporter != nil && strings.TrimSpace(opts.Label) != "" {
+		opts.Reporter.Activity("Validating", opts.Current, opts.Total, opts.Label)
+	}
 	if opts.Reporter != nil {
 		opts.Reporter.Tool("syntax-validator", "parse "+formatLabel(format))
 	}

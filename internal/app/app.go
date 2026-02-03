@@ -128,9 +128,7 @@ func Translate(root string, opts TranslateOptions) error {
 		return nil
 	}
 
-	progress := reporter.Progress("translate", total)
-	defer progress.Done()
-
+	current := 0
 	for _, planItem := range plans {
 		updated := false
 		for _, output := range planItem.source.Outputs {
@@ -138,9 +136,11 @@ func Translate(root string, opts TranslateOptions) error {
 				continue
 			}
 			label := fmt.Sprintf("%s -> %s (%s)", planItem.source.SourcePath, output.OutputPath, output.Lang)
+			step := current + 1
+			reporter.Activity("Translating", step, total, label)
 			if opts.DryRun {
 				reporter.Info("dry-run " + label)
-				progress.Increment(label)
+				current = step
 				continue
 			}
 
@@ -159,18 +159,21 @@ func Translate(root string, opts TranslateOptions) error {
 
 			contextParts := planItem.source.ContextPartsFor(output.Lang)
 			translation, err := translator.Translate(context.Background(), agent.TranslationRequest{
-				Source:       string(planItem.sourceBytes),
-				TargetLang:   output.Lang,
-				Format:       planItem.source.Format,
-				Context:      strings.Join(contextParts, "\n\n"),
-				Preserve:     planItem.source.Entry.Preserve,
-				Frontmatter:  planItem.source.Entry.Frontmatter,
-				CheckCmd:     pickCheckCmd(opts.CheckCmd, planItem.source.Entry.CheckCmd),
-				CheckCmds:    checkCmds,
-				ToolReporter: reporter,
-				Retries:      retries,
-				Coordinator:  planItem.source.LLM.Coordinator,
-				Translator:   planItem.source.LLM.Translator,
+				Source:          string(planItem.sourceBytes),
+				TargetLang:      output.Lang,
+				Format:          planItem.source.Format,
+				Context:         strings.Join(contextParts, "\n\n"),
+				Preserve:        planItem.source.Entry.Preserve,
+				Frontmatter:     planItem.source.Entry.Frontmatter,
+				CheckCmd:        pickCheckCmd(opts.CheckCmd, planItem.source.Entry.CheckCmd),
+				CheckCmds:       checkCmds,
+				ToolReporter:    reporter,
+				ProgressLabel:   label,
+				ProgressCurrent: step,
+				ProgressTotal:   total,
+				Retries:         retries,
+				Coordinator:     planItem.source.LLM.Coordinator,
+				Translator:      planItem.source.LLM.Translator,
 			})
 			if err != nil {
 				return fmt.Errorf("translate %s (%s): %w", planItem.source.SourcePath, output.Lang, err)
@@ -195,7 +198,7 @@ func Translate(root string, opts TranslateOptions) error {
 				CheckedAt:   nowUTC(),
 			}
 			updated = true
-			progress.Increment(label)
+			current = step
 		}
 
 		if opts.DryRun || !updated {
@@ -351,7 +354,7 @@ func Check(root string, opts CheckOptions) error {
 	for _, source := range pl.Sources {
 		total += len(source.Outputs)
 	}
-	progress := reporter.Progress("check", total)
+	progress := reporter.Progress("Validating", total)
 	defer progress.Done()
 
 	checker := checks.Checker{Root: root}

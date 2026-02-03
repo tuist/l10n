@@ -80,6 +80,15 @@ func (r *Renderer) Tool(name, detail string) {
 	r.println(msg)
 }
 
+func (r *Renderer) Activity(stage string, current, total int, label string) {
+	line := formatActivityLine(stage, current, total, label)
+	if !r.isTTY || r.noColor {
+		r.println(line)
+		return
+	}
+	r.println(tintProgressLine(line, current, total, r.noColor, r.styles))
+}
+
 func (r *Renderer) Status(kind app.StatusKind, source, output, lang string) {
 	label := string(kind)
 	style := r.styles.label
@@ -121,7 +130,7 @@ func (r *Renderer) Progress(label string, total int) app.ProgressReporter {
 		out:     r.out,
 		render:  r,
 		total:   total,
-		label:   label,
+		stage:   label,
 		enabled: r.isTTY,
 	}
 }
@@ -139,6 +148,7 @@ type progressReporter struct {
 	total   int
 	current int
 	label   string
+	stage   string
 	enabled bool
 }
 
@@ -160,16 +170,10 @@ func (p *progressReporter) Done() {
 
 func (p *progressReporter) renderLine() {
 	if !p.enabled {
-		line := fmt.Sprintf("%d/%d %s", p.current, p.total, p.label)
-		p.render.Info(line)
+		p.render.Info(formatActivityLine(p.stage, p.current, p.total, p.label))
 		return
 	}
-	label := truncate(p.label, 80)
-	if !strings.HasSuffix(label, "...") {
-		label += " ..."
-	}
-	line := fmt.Sprintf("Working %d/%d %s", p.current, p.total, label)
-	fmt.Fprintln(p.out, tintProgressLine(line, p.current, p.total, p.render.noColor, p.render.styles))
+	p.render.Activity(p.stage, p.current, p.total, p.label)
 }
 
 type noopProgress struct{}
@@ -217,4 +221,16 @@ func minInt(a, b int) int {
 		return a
 	}
 	return b
+}
+
+func formatActivityLine(stage string, current, total int, label string) string {
+	stage = strings.TrimSpace(stage)
+	if stage == "" {
+		stage = "Working"
+	}
+	label = truncate(label, 80)
+	if strings.TrimSpace(label) != "" && !strings.HasSuffix(label, "...") {
+		label += " ..."
+	}
+	return fmt.Sprintf("%s %d/%d %s", stage, current, total, label)
 }

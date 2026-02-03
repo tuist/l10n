@@ -19,18 +19,21 @@ type Agent struct {
 }
 
 type TranslationRequest struct {
-	Source       string
-	TargetLang   string
-	Format       plan.Format
-	Context      string
-	Preserve     []string
-	Frontmatter  string
-	CheckCmd     string
-	CheckCmds    map[string]string
-	ToolReporter checks.ToolReporter
-	Retries      int
-	Coordinator  config.AgentConfig
-	Translator   config.AgentConfig
+	Source          string
+	TargetLang      string
+	Format          plan.Format
+	Context         string
+	Preserve        []string
+	Frontmatter     string
+	CheckCmd        string
+	CheckCmds       map[string]string
+	ToolReporter    checks.ToolReporter
+	ProgressLabel   string
+	ProgressCurrent int
+	ProgressTotal   int
+	Retries         int
+	Coordinator     config.AgentConfig
+	Translator      config.AgentConfig
 }
 
 func (a *Agent) Translate(ctx context.Context, req TranslationRequest) (string, error) {
@@ -83,6 +86,9 @@ func (a *Agent) Translate(ctx context.Context, req TranslationRequest) (string, 
 			CheckCmd:  req.CheckCmd,
 			CheckCmds: req.CheckCmds,
 			Reporter:  req.ToolReporter,
+			Label:     req.ProgressLabel,
+			Current:   req.ProgressCurrent,
+			Total:     req.ProgressTotal,
 		})
 		if checkErr == nil {
 			return final, nil
