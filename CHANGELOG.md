@@ -1,6 +1,11 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.1.2] - 2026-02-03
+
+### Other
+- Simplify release notes body
+
 ## [v0.1.1] - 2026-02-03
 
 ### Other
