@@ -1,6 +1,12 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.1.4] - 2026-02-03
+
+### Other
+- Add Cloudflare Workers deploy workflow
+- Add emojis to README headings
+
 ## [v0.1.3] - 2026-02-03
 
 ### Chores
