@@ -138,6 +138,29 @@ output = "site/src/_data/i18n/{lang}/{basename}.{ext}"
   </div>
 </section>
 
+<section id="refinement" class="section">
+  <div class="container">
+    <h2 class="reveal">{{ home.refinement.title }}</h2>
+    <p class="lead muted reveal">{{ home.refinement.lead }}</p>
+    <p class="refinement-text reveal">{{ home.refinement.text }}</p>
+    <div class="refinement-steps">
+      {% for step in home.refinement.steps %}
+      <div class="refinement-step reveal">
+        <div class="refinement-marker">
+          <div class="refinement-dot"></div>
+          {% if not loop.last %}<div class="refinement-line"></div>{% endif %}
+        </div>
+        <div class="refinement-content">
+          <strong>{{ step.label }}</strong>
+          <p>{{ step.text }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <p class="refinement-prior-art muted reveal">{{ home.refinement.prior_art }}</p>
+  </div>
+</section>
+
 <section class="section">
   <div class="container">
     <h2 class="reveal">{{ home.faq.title }}</h2>
