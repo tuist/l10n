@@ -1,6 +1,53 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.8.0] - 2026-02-03
+
+### Features
+- feat: reimplement CLI in Bun/TypeScript
+
+Replace the Go implementation with a Bun/TypeScript implementation that
+is also compatible with Node.js for Electron embedding. The CLI produces
+standalone portable executables via `bun build --compile`.
+
+- Add Bun as a Mise dependency (replaces Go)
+- Implement all CLI commands: init, translate, check, status, clean
+- Port config parsing (TOML frontmatter), LLM client (OpenAI/Anthropic),
+  plan building, validation, lock files, and TUI reporter
+- Use only Node.js-compatible APIs (fs/promises, crypto, child_process)
+  so the code runs in both Bun and Node.js/Electron
+- Update release workflow to build Bun standalone binaries per platform
+- Dependencies: @iarna/toml, js-yaml, minimatch
+
+https://claude.ai/code/session_01RjLfQQg7nhT9YuTjvo8ooK
+- feat: add CI workflow and tests
+
+Add a GitHub Actions CI pipeline that runs typecheck, tests, and build
+on every push/PR to main. Add unit tests for config parsing, validation,
+checks, hashing, format detection, and output expansion.
+
+https://claude.ai/code/session_01RjLfQQg7nhT9YuTjvo8ooK
+- feat: add format checking with Biome
+
+Add Biome formatter with format:check CI step. Auto-format all source
+files to consistent style (2-space indent, double quotes, semicolons,
+trailing commas, 100 char line width).
+
+https://claude.ai/code/session_01RjLfQQg7nhT9YuTjvo8ooK
+
+
+### Other
+- Merge pull request #2 from tuist/claude/cli-bun-reimplementation-xzq8x
+
+
+### Refactors
+- refactor: split CI into separate format, typecheck, test, build jobs
+
+Run each check as an independent parallel job for faster feedback and
+clearer failure signals.
+
+https://claude.ai/code/session_01RjLfQQg7nhT9YuTjvo8ooK
+
 ## [v0.7.1] - 2026-02-03
 
 ### Bug Fixes
