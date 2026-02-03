@@ -1,5 +1,8 @@
 # l10n 🌍
 
+> [!WARNING]
+> This project is in an **experimental phase**. APIs and behavior may change without notice. Please don't expect high responsiveness to issues or pull requests.
+
 Localize like you ship software. `l10n` is a Go CLI that translates files locally using LLMs, keeps content in‑repo, and validates output with your own tooling.
 
 ## Install 📦
