@@ -133,6 +133,30 @@
       }
     ]
   },
+  "refinement": {
+    "title": "Progressive Refinement",
+    "lead": "Translations don't have to be perfect on day one. Like code, they improve through iteration.",
+    "text": "First drafts from LLMs are structurally correct but may miss nuance, tone, or domain-specific phrasing. That is by design. Each review cycle — a pull request comment, an updated context file, a glossary tweak — feeds back into the next translation run. Quality converges over successive passes, not in a single shot.",
+    "steps": [
+      {
+        "label": "Draft",
+        "text": "LLM generates a structurally valid first pass based on your context files."
+      },
+      {
+        "label": "Review",
+        "text": "Your team flags issues through pull requests, just like code review."
+      },
+      {
+        "label": "Refine",
+        "text": "Updated context and glossary corrections feed into the next run, closing the gap."
+      },
+      {
+        "label": "Converge",
+        "text": "Each cycle narrows the distance to production quality. The system learns your product's voice."
+      }
+    ],
+    "prior_art": "This follows the same principle behind Kaizen in manufacturing, post-editing in professional translation (PEMT), and successive approximation in engineering: start with a good-enough baseline and systematically improve it with human judgment in the loop."
+  },
   "faq": {
     "title": "FAQ",
     "items": [

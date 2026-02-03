@@ -97,6 +97,30 @@
       }
     ]
   },
+  "refinement": {
+    "title": "Progressive Verfeinerung",
+    "lead": "Übersetzungen müssen nicht am ersten Tag perfekt sein. Wie Code verbessern sie sich durch Iteration.",
+    "text": "Erste Entwürfe von LLMs sind strukturell korrekt, können aber Nuancen, Tonalität oder domänenspezifische Formulierungen verfehlen. Das ist beabsichtigt. Jeder Review-Zyklus — ein Kommentar im Pull Request, eine aktualisierte Kontextdatei, eine Glossar-Korrektur — fließt in den nächsten Übersetzungslauf ein. Qualität konvergiert über aufeinanderfolgende Durchläufe, nicht in einem einzigen Anlauf.",
+    "steps": [
+      {
+        "label": "Entwurf",
+        "text": "Das LLM generiert einen strukturell validen ersten Durchlauf basierend auf Ihren Kontextdateien."
+      },
+      {
+        "label": "Review",
+        "text": "Ihr Team markiert Probleme über Pull Requests, genau wie beim Code-Review."
+      },
+      {
+        "label": "Verfeinern",
+        "text": "Aktualisierter Kontext und Glossar-Korrekturen fließen in den nächsten Lauf ein und schließen die Lücke."
+      },
+      {
+        "label": "Konvergieren",
+        "text": "Jeder Zyklus verringert den Abstand zur Produktionsqualität. Das System lernt die Stimme Ihres Produkts."
+      }
+    ],
+    "prior_art": "Dies folgt dem gleichen Prinzip wie Kaizen in der Fertigung, Post-Editing in der professionellen Übersetzung (PEMT) und sukzessive Approximation in der Technik: mit einer ausreichend guten Basis starten und sie systematisch mit menschlichem Urteil im Prozess verbessern."
+  },
   "faq": {
     "title": "FAQ",
     "items": [

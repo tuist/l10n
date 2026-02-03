@@ -573,6 +573,73 @@ code[class*="language-"] {
   font-size: 0.9rem;
 }
 
+/* ——— Progressive Refinement ——— */
+.refinement-text {
+  color: var(--ink-2);
+  font-size: 0.95rem;
+  max-width: 640px;
+  margin-bottom: 2rem;
+}
+
+.refinement-steps {
+  display: grid;
+  gap: 0;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.refinement-step {
+  display: flex;
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+.refinement-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 1.5rem;
+}
+
+.refinement-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  margin-top: 0.45rem;
+}
+
+.refinement-line {
+  width: 2px;
+  flex: 1;
+  background: var(--accent-mid);
+}
+
+.refinement-content {
+  padding-bottom: 1.5rem;
+}
+
+.refinement-content strong {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}
+
+.refinement-content p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.refinement-prior-art {
+  font-size: 0.875rem;
+  max-width: 640px;
+  line-height: 1.7;
+  border-left: 3px solid var(--accent-mid);
+  padding-left: 1rem;
+}
+
 /* ——— FAQ ——— */
 .faq {
   display: grid;

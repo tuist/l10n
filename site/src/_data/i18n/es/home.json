@@ -93,6 +93,30 @@
       }
     ]
   },
+  "refinement": {
+    "title": "Refinamiento progresivo",
+    "lead": "Las traducciones no tienen que ser perfectas desde el primer día. Como el código, mejoran con la iteración.",
+    "text": "Los primeros borradores de los LLMs son estructuralmente correctos pero pueden fallar en matices, tono o terminología específica del dominio. Eso es parte del diseño. Cada ciclo de revisión — un comentario en un pull request, un archivo de contexto actualizado, un ajuste en el glosario — retroalimenta la siguiente ejecución de traducción. La calidad converge en pasadas sucesivas, no de un solo intento.",
+    "steps": [
+      {
+        "label": "Borrador",
+        "text": "El LLM genera una primera pasada estructuralmente válida basada en tus archivos de contexto."
+      },
+      {
+        "label": "Revisión",
+        "text": "Tu equipo señala problemas a través de pull requests, igual que en la revisión de código."
+      },
+      {
+        "label": "Refinar",
+        "text": "El contexto actualizado y las correcciones de glosario alimentan la siguiente ejecución, cerrando la brecha."
+      },
+      {
+        "label": "Converger",
+        "text": "Cada ciclo reduce la distancia a la calidad de producción. El sistema aprende la voz de tu producto."
+      }
+    ],
+    "prior_art": "Esto sigue el mismo principio detrás del Kaizen en manufactura, la post-edición en traducción profesional (PEMT) y la aproximación sucesiva en ingeniería: comenzar con una base suficientemente buena y mejorarla sistemáticamente con el criterio humano en el ciclo."
+  },
   "faq": {
     "title": "FAQ",
     "items": [
