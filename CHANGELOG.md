@@ -1,6 +1,24 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.8.2] - 2026-02-03
+
+### Bug Fixes
+- fix: improve mobile responsive layout to prevent horizontal overflow
+
+- Add overflow-x: hidden on html to prevent horizontal scroll
+- Add min-width: 0 to grid children (step, tool-card, feature, config-card) to prevent content overflow
+- Add overflow: hidden on config-card to contain code blocks
+- Add max-width: 100% to code blocks for proper containment
+- Make code blocks edge-to-edge within config cards on mobile for better space usage
+- Adjust small phone breakpoint for config card code blocks
+
+https://claude.ai/code/session_0161yaFEs2sRkn1wXsQhyWic
+
+
+### Other
+- Merge pull request #5 from tuist/claude/fix-mobile-responsive-Y0HcQ
+
 ## [v0.8.1] - 2026-02-03
 
 ### Bug Fixes
