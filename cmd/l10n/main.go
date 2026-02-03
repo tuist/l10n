@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/alecthomas/kong"
 
@@ -12,11 +14,15 @@ import (
 
 type CLI struct {
 	NoColor   bool         `help:"Disable color output."`
+	Path      string       `help:"Run as if in this directory."`
+	Init      InitCmd      `cmd:"" help:"Initialize l10n in this repo."`
 	Translate TranslateCmd `cmd:"" help:"Generate translations."`
 	Check     CheckCmd     `cmd:"" help:"Validate outputs."`
 	Status    StatusCmd    `cmd:"" help:"Report missing or stale outputs."`
 	Clean     CleanCmd     `cmd:"" help:"Remove generated outputs and lockfiles."`
 }
+
+type InitCmd struct{}
 
 type TranslateCmd struct {
 	Force    bool   `help:"Retranslate even if up to date."`
@@ -40,6 +46,10 @@ type CleanCmd struct {
 type Context struct {
 	Root     string
 	Reporter app.Reporter
+}
+
+func (c *InitCmd) Run(ctx *Context) error {
+	return app.Init(ctx.Root, app.InitOptions{Reporter: ctx.Reporter})
 }
 
 func (c *TranslateCmd) Run(ctx *Context) error {
@@ -90,7 +100,12 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	root := app.FindRoot(cwd)
+	baseDir, err := resolveBaseDir(cwd, cli.Path)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	root := app.FindRoot(baseDir)
 	noColor := cli.NoColor || os.Getenv("NO_COLOR") != ""
 	reporter := ui.NewRenderer(ui.Options{NoColor: noColor, Out: os.Stdout})
 
@@ -98,4 +113,22 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+}
+
+func resolveBaseDir(cwd, override string) (string, error) {
+	if strings.TrimSpace(override) == "" {
+		return cwd, nil
+	}
+	path := override
+	if !filepath.IsAbs(path) {
+		path = filepath.Join(cwd, path)
+	}
+	info, err := os.Stat(path)
+	if err != nil {
+		return "", err
+	}
+	if !info.IsDir() {
+		path = filepath.Dir(path)
+	}
+	return path, nil
 }

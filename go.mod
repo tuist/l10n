@@ -5,6 +5,7 @@ go 1.24.2
 require (
 	github.com/alecthomas/kong v1.13.0
 	github.com/bmatcuk/doublestar/v4 v4.8.1
+	github.com/charmbracelet/bubbletea v1.3.10
 	github.com/charmbracelet/bubbles v0.21.1
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/muesli/termenv v0.16.0
@@ -15,7 +16,6 @@ require (
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
-	github.com/charmbracelet/bubbletea v1.3.10 // indirect
 	github.com/charmbracelet/colorprofile v0.4.1 // indirect
 	github.com/charmbracelet/harmonica v0.2.0 // indirect
 	github.com/charmbracelet/x/ansi v0.11.5 // indirect
