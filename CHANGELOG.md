@@ -1,6 +1,24 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.7.0] - 2026-02-03
+
+### Features
+- feat: make website responsive with mobile menu and multi-breakpoint layout
+
+- Add hamburger menu for mobile navigation (hidden nav links now accessible)
+- Add 960px tablet breakpoint for intermediate screen sizes
+- Add 400px small phone breakpoint for tighter spacing
+- Improve code block display on mobile (edge-to-edge, smaller font)
+- Allow CLI command items to wrap on narrow screens
+- Scale typography and spacing for mobile viewports
+
+https://claude.ai/code/session_01KFZBTTHaxGaD4EHaG5btCw
+
+
+### Other
+- Merge pull request #1 from tuist/claude/make-website-responsive-As32c
+
 ## [v0.6.0] - 2026-02-03
 
 ### Features
