@@ -30,22 +30,35 @@ type Options struct {
 
 var defaultPreserve = []string{"code_blocks", "inline_code", "urls", "placeholders"}
 
+type ToolError struct {
+	Tool string
+	Err  error
+}
+
+func (e ToolError) Error() string {
+	return fmt.Sprintf("%s tool failed: %v", e.Tool, e.Err)
+}
+
+func (e ToolError) Unwrap() error {
+	return e.Err
+}
+
 func (c Checker) Validate(ctx context.Context, format plan.Format, output string, source string, opts Options) error {
 	if err := validateSyntax(format, output); err != nil {
-		return err
+		return ToolError{Tool: "syntax-validator", Err: err}
 	}
 
 	preserveKinds := resolvePreserve(opts.Preserve)
 	if len(preserveKinds) > 0 {
 		if err := validatePreserve(output, source, preserveKinds); err != nil {
-			return err
+			return ToolError{Tool: "preserve-check", Err: err}
 		}
 	}
 
 	cmd := selectCheckCmd(format, opts.CheckCmd, opts.CheckCmds)
 	if cmd != "" {
 		if err := c.runExternal(ctx, cmd, output); err != nil {
-			return err
+			return ToolError{Tool: "custom-command", Err: err}
 		}
 	}
 

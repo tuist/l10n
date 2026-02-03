@@ -3,3 +3,4 @@
 /.l10n/tmp
 /l10n
 .env
+.DS_Store

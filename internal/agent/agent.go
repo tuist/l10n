@@ -10,6 +10,7 @@ import (
 	"github.com/tuist/l10n/internal/config"
 	"github.com/tuist/l10n/internal/llm"
 	"github.com/tuist/l10n/internal/plan"
+	"github.com/tuist/l10n/internal/tools"
 )
 
 type Agent struct {
@@ -107,10 +108,11 @@ Target language: %s
 Format: %s
 Preserve: %s
 Frontmatter mode: %s
+Tools: %s
 
 Context:
 %s
-`, req.TargetLang, req.Format, strings.Join(req.Preserve, ", "), req.Frontmatter, req.Context)
+`, req.TargetLang, req.Format, strings.Join(req.Preserve, ", "), req.Frontmatter, tools.Summary(), req.Context)
 
 	resp, err := a.Client.Chat(ctx, req.Coordinator, model, []llm.ChatMessage{
 		{Role: "system", Content: "You coordinate translations and produce concise briefs."},
@@ -135,6 +137,7 @@ func defaultBrief(req TranslationRequest) string {
 	if req.Frontmatter == config.FrontmatterPreserve {
 		lines = append(lines, "Frontmatter is preserved separately; do not add new frontmatter.")
 	}
+	lines = append(lines, "Tools run after translation: "+tools.Summary()+".")
 	return strings.Join(lines, "\n")
 }
 

@@ -358,6 +358,63 @@ p:last-child { margin-bottom: 0; }
   font-size: 0.9rem;
 }
 
+/* ——— Tools ——— */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.tool-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), border-color var(--transition);
+}
+
+.tool-card:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--border-strong);
+}
+
+.tool-card p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.tool-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.tool-list li {
+  font-size: 0.9rem;
+  color: var(--ink-2);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.tool-list li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  opacity: 0.4;
+}
+
+.tool-note {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+}
+
 /* ——— Config section ——— */
 .config-grid {
   display: grid;
@@ -762,6 +819,10 @@ code[class*="language-"] {
   }
 
   .config-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tools-grid {
     grid-template-columns: 1fr;
   }
 

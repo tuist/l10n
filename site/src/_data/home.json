@@ -41,6 +41,42 @@
       }
     ]
   },
+  "tools": {
+    "title": "First-party tools",
+    "intro": "Agents run a toolchain after every translation so output is correct before humans review.",
+    "categories": [
+      {
+        "title": "Syntax validators",
+        "text": "Parse output to ensure it is valid before it is saved.",
+        "items": [
+          "JSON",
+          "YAML",
+          "PO",
+          "Markdown frontmatter"
+        ]
+      },
+      {
+        "title": "Preserve checks",
+        "text": "Guarantee critical tokens survive translation.",
+        "items": [
+          "Code blocks",
+          "Inline code",
+          "URLs",
+          "Placeholders"
+        ]
+      },
+      {
+        "title": "Custom commands",
+        "text": "Bring your own validators with check_cmd and check_cmds.",
+        "items": [
+          "Linters",
+          "Compilers",
+          "Schema validators"
+        ]
+      }
+    ],
+    "note": "Tool failures trigger retries until the output is valid."
+  },
   "config": {
     "title": "Configuration lives in your repo",
     "l10n": {

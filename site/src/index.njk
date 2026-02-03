@@ -52,6 +52,27 @@
   </div>
 </section>
 
+<section id="tools" class="section">
+  <div class="container">
+    <h2 class="reveal">{{ home.tools.title }}</h2>
+    <p class="muted lead reveal">{{ home.tools.intro }}</p>
+    <div class="tools-grid">
+      {% for tool in home.tools.categories %}
+      <div class="tool-card reveal">
+        <h3>{{ tool.title }}</h3>
+        <p>{{ tool.text }}</p>
+        <ul class="tool-list">
+          {% for item in tool.items %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </div>
+    <p class="muted tool-note reveal">{{ home.tools.note }}</p>
+  </div>
+</section>
+
 <section id="config" class="section">
   <div class="container">
     <h2 class="reveal">{{ home.config.title }}</h2>
@@ -130,4 +151,3 @@ output = "site/src/_data/i18n/{lang}/{basename}.{ext}"
     </div>
   </div>
 </section>
-
