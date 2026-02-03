@@ -2,6 +2,7 @@
 go = "1.22"
 node = "20"
 git-cliff = "2.10.0"
+"github:tuist/l10n" = "latest"
 
 [env]
 _.file = ".env"
