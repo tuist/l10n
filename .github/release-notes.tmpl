@@ -1,0 +1,2 @@
+{% for group, commits in commits | group_by(attribute="group") %}{% for commit in commits %}- {{ commit.message }}
+{% endfor %}{% endfor %}

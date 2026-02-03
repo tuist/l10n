@@ -72,7 +72,7 @@ jobs:
         if: steps.releasable.outputs.should_release == 'true'
         run: |
           echo "release_notes<<EOF" >> "$GITHUB_OUTPUT"
-          git cliff --config cliff.toml --latest >> "$GITHUB_OUTPUT"
+          git cliff --config cliff.toml --latest --strip all --body "$(cat .github/release-notes.tmpl)" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
 
   build:
