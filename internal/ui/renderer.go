@@ -26,14 +26,15 @@ type Renderer struct {
 }
 
 type styles struct {
-	info    lipgloss.Style
-	ok      lipgloss.Style
-	warn    lipgloss.Style
-	error   lipgloss.Style
-	label   lipgloss.Style
-	tool    lipgloss.Style
-	run     lipgloss.Style
-	summary lipgloss.Style
+	info           lipgloss.Style
+	ok             lipgloss.Style
+	warn           lipgloss.Style
+	error          lipgloss.Style
+	label          lipgloss.Style
+	tool           lipgloss.Style
+	progressActive lipgloss.Style
+	progressIdle   lipgloss.Style
+	summary        lipgloss.Style
 }
 
 func NewRenderer(opts Options) *Renderer {
@@ -53,14 +54,15 @@ func NewRenderer(opts Options) *Renderer {
 		isTTY:   isTTY,
 		noColor: opts.NoColor || profile == termenv.Ascii,
 		styles: styles{
-			info:    lipgloss.NewStyle().Foreground(lipgloss.Color("69")),
-			ok:      lipgloss.NewStyle().Foreground(lipgloss.Color("34")).Bold(true),
-			warn:    lipgloss.NewStyle().Foreground(lipgloss.Color("208")).Bold(true),
-			error:   lipgloss.NewStyle().Foreground(lipgloss.Color("196")).Bold(true),
-			label:   lipgloss.NewStyle().Foreground(lipgloss.Color("244")),
-			tool:    lipgloss.NewStyle().Foreground(lipgloss.Color("105")).Bold(true),
-			run:     lipgloss.NewStyle().Foreground(lipgloss.Color("117")).Bold(true),
-			summary: lipgloss.NewStyle().Bold(true),
+			info:           lipgloss.NewStyle().Foreground(lipgloss.Color("69")),
+			ok:             lipgloss.NewStyle().Foreground(lipgloss.Color("34")).Bold(true),
+			warn:           lipgloss.NewStyle().Foreground(lipgloss.Color("208")).Bold(true),
+			error:          lipgloss.NewStyle().Foreground(lipgloss.Color("196")).Bold(true),
+			label:          lipgloss.NewStyle().Foreground(lipgloss.Color("244")),
+			tool:           lipgloss.NewStyle().Foreground(lipgloss.Color("105")).Bold(true),
+			progressActive: lipgloss.NewStyle().Foreground(lipgloss.Color("252")).Bold(true),
+			progressIdle:   lipgloss.NewStyle().Foreground(lipgloss.Color("240")),
+			summary:        lipgloss.NewStyle().Bold(true),
 		},
 	}
 }
@@ -162,14 +164,12 @@ func (p *progressReporter) renderLine() {
 		p.render.Info(line)
 		return
 	}
-	percent := percentLabel(p.current, p.total)
 	label := truncate(p.label, 80)
 	if !strings.HasSuffix(label, "...") {
 		label += " ..."
 	}
-	status := p.render.styles.run.Render("running")
-	line := fmt.Sprintf("%s %s %d/%d %s", status, percent, p.current, p.total, label)
-	fmt.Fprintln(p.out, line)
+	line := fmt.Sprintf("Working %d/%d %s", p.current, p.total, label)
+	fmt.Fprintln(p.out, tintProgressLine(line, p.current, p.total, p.render.noColor, p.render.styles))
 }
 
 type noopProgress struct{}
@@ -187,16 +187,34 @@ func truncate(value string, max int) string {
 	return value[:max-3] + "..."
 }
 
-func percentLabel(current, total int) string {
-	if total <= 0 {
-		return "  0%"
+func tintProgressLine(line string, current, total int, noColor bool, styles styles) string {
+	if noColor || total <= 0 {
+		return line
 	}
-	percent := int(float64(current) / float64(total) * 100.0)
-	if percent < 0 {
-		percent = 0
+	if current < 0 {
+		current = 0
 	}
-	if percent > 100 {
-		percent = 100
+	if current > total {
+		current = total
 	}
-	return fmt.Sprintf("%3d%%", percent)
+	if len(line) == 0 {
+		return line
+	}
+	activeLen := int(float64(len(line)) * float64(current) / float64(total))
+	if activeLen < 8 {
+		activeLen = minInt(8, len(line))
+	}
+	if activeLen > len(line) {
+		activeLen = len(line)
+	}
+	active := styles.progressActive.Render(line[:activeLen])
+	idle := styles.progressIdle.Render(line[activeLen:])
+	return active + idle
+}
+
+func minInt(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
