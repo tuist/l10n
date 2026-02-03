@@ -72,8 +72,12 @@ func (r *Renderer) Info(message string) {
 }
 
 func (r *Renderer) Tool(name, detail string) {
-	label := r.styles.tool.Render("tool")
-	msg := label + " " + r.styles.label.Render(name)
+	label := "Tool"
+	if !r.noColor {
+		label = r.styles.tool.Render(label)
+	}
+	toolName := r.styles.label.Render(name)
+	msg := fmt.Sprintf("%s (%s)", label, toolName)
 	if strings.TrimSpace(detail) != "" {
 		msg += ": " + detail
 	}
