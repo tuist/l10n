@@ -1,6 +1,32 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.10.0] - 2026-02-03
+
+### Bug Fixes
+- fix: replace em dashes with commas in blog post
+
+https://claude.ai/code/session_011FXxff8XVFLaVpHDJewZnm
+
+
+### Features
+- feat: add blog section with SEO support and first blog post
+
+Add a complete blog infrastructure: listing page at /blog/ with pagination
+for all locales, SEO meta tags (Open Graph, Twitter Cards, JSON-LD structured
+data, canonical URLs), navigation links, and a homepage blog section.
+
+The first post covers why l10n was built — the overhead of syncing content
+with external platforms, the CI failures from tools that can't validate,
+the conversation with María José that sparked the agent-based approach,
+and the vision for a human input experience beyond the terminal.
+
+https://claude.ai/code/session_011FXxff8XVFLaVpHDJewZnm
+
+
+### Other
+- Merge pull request #7 from tuist/claude/add-localization-blog-post-prJrQ
+
 ## [v0.9.0] - 2026-02-03
 
 ### Features
