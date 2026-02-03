@@ -943,6 +943,8 @@ code[class*="language-"] {
     margin-right: -5vw;
     border-radius: 0;
     width: calc(100% + 10vw);
+    max-width: 100vw;
+    box-sizing: border-box;
   }
 
   .cli-item {
