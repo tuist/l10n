@@ -150,6 +150,8 @@ Per‑file lockfiles are written to `.l10n/locks/` and include source hash plus 
 - `l10n status` — report missing/stale outputs
 - `l10n clean` — remove generated outputs and lockfiles (`--orphans` removes outputs from stale lockfiles)
 
+Use `--no-color` or set `NO_COLOR=1` to disable styled output.
+
 ## Development
 
 ```bash

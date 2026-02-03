@@ -10,5 +10,8 @@ module.exports = {
       return "/";
     }
     return data.localeCode === "en" ? "/" : `/${data.localeCode}/`;
+  },
+  eleventyComputed: {
+    locale: (data) => data.localeCode || "en"
   }
 };

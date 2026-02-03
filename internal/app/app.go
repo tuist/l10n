@@ -25,17 +25,22 @@ type TranslateOptions struct {
 	Retries  int
 	DryRun   bool
 	CheckCmd string
+	Reporter Reporter
 }
 
 type CheckOptions struct {
 	CheckCmd string
+	Reporter Reporter
 }
 
-type StatusOptions struct{}
+type StatusOptions struct {
+	Reporter Reporter
+}
 
 type CleanOptions struct {
-	DryRun  bool
-	Orphans bool
+	DryRun   bool
+	Orphans  bool
+	Reporter Reporter
 }
 
 func Translate(root string, opts TranslateOptions) error {
@@ -47,9 +52,23 @@ func Translate(root string, opts TranslateOptions) error {
 		return errors.New("no sources found")
 	}
 
+	reporter := ensureReporter(opts.Reporter)
+
 	client := llm.NewClient()
 	checker := checks.Checker{Root: root}
 	translator := agent.Agent{Client: client, Checker: checker}
+
+	type translatePlan struct {
+		source        plan.SourcePlan
+		sourceBytes   []byte
+		sourceHash    string
+		lock          *locks.LockFile
+		contextHashes map[string]string
+		translate     map[string]bool
+	}
+
+	plans := []translatePlan{}
+	total := 0
 
 	for _, source := range pl.Sources {
 		sourceBytes, err := os.ReadFile(source.AbsPath)
@@ -67,13 +86,19 @@ func Translate(root string, opts TranslateOptions) error {
 			lock = &locks.LockFile{SourcePath: source.SourcePath, Outputs: map[string]locks.OutputLock{}}
 		}
 
-		updated := false
+		contextHashes := map[string]string{}
+		translate := map[string]bool{}
+
 		for _, output := range source.Outputs {
 			contextParts := source.ContextPartsFor(output.Lang)
 			contextHash := ctxhash.HashStrings(contextParts)
+			contextHashes[output.Lang] = contextHash
 			outputAbs := filepath.Join(root, output.OutputPath)
 			_, outputErr := os.Stat(outputAbs)
 			missing := outputErr != nil
+			if outputErr != nil && !os.IsNotExist(outputErr) {
+				return outputErr
+			}
 			outputLock, hasOutputLock := lock.Outputs[output.Lang]
 			lockedContextHash := lockContextHash(lock, output.Lang)
 			upToDate := !missing &&
@@ -84,41 +109,73 @@ func Translate(root string, opts TranslateOptions) error {
 			if !opts.Force && upToDate {
 				continue
 			}
+			translate[output.Lang] = true
+			total++
+		}
+
+		plans = append(plans, translatePlan{
+			source:        source,
+			sourceBytes:   sourceBytes,
+			sourceHash:    sourceHash,
+			lock:          lock,
+			contextHashes: contextHashes,
+			translate:     translate,
+		})
+	}
+
+	if total == 0 {
+		reporter.Info("no translations needed")
+		return nil
+	}
+
+	progress := reporter.Progress("translate", total)
+	defer progress.Done()
+
+	for _, planItem := range plans {
+		updated := false
+		for _, output := range planItem.source.Outputs {
+			if !planItem.translate[output.Lang] {
+				continue
+			}
+			label := fmt.Sprintf("%s -> %s (%s)", planItem.source.SourcePath, output.OutputPath, output.Lang)
 			if opts.DryRun {
-				fmt.Printf("translate %s -> %s (%s)\n", source.SourcePath, output.OutputPath, output.Lang)
+				reporter.Info("dry-run " + label)
+				progress.Increment(label)
 				continue
 			}
 
 			retries := opts.Retries
-			if retries < 0 && source.Entry.Retries != nil {
-				retries = *source.Entry.Retries
+			if retries < 0 && planItem.source.Entry.Retries != nil {
+				retries = *planItem.source.Entry.Retries
 			}
 			if retries < 0 {
 				retries = 2
 			}
 
-			checkCmds := source.Entry.CheckCmds
+			checkCmds := planItem.source.Entry.CheckCmds
 			if strings.TrimSpace(opts.CheckCmd) != "" {
 				checkCmds = nil
 			}
 
+			contextParts := planItem.source.ContextPartsFor(output.Lang)
 			translation, err := translator.Translate(context.Background(), agent.TranslationRequest{
-				Source:      string(sourceBytes),
+				Source:      string(planItem.sourceBytes),
 				TargetLang:  output.Lang,
-				Format:      source.Format,
+				Format:      planItem.source.Format,
 				Context:     strings.Join(contextParts, "\n\n"),
-				Preserve:    source.Entry.Preserve,
-				Frontmatter: source.Entry.Frontmatter,
-				CheckCmd:    pickCheckCmd(opts.CheckCmd, source.Entry.CheckCmd),
+				Preserve:    planItem.source.Entry.Preserve,
+				Frontmatter: planItem.source.Entry.Frontmatter,
+				CheckCmd:    pickCheckCmd(opts.CheckCmd, planItem.source.Entry.CheckCmd),
 				CheckCmds:   checkCmds,
 				Retries:     retries,
-				Coordinator: source.LLM.Coordinator,
-				Translator:  source.LLM.Translator,
+				Coordinator: planItem.source.LLM.Coordinator,
+				Translator:  planItem.source.LLM.Translator,
 			})
 			if err != nil {
-				return fmt.Errorf("translate %s (%s): %w", source.SourcePath, output.Lang, err)
+				return fmt.Errorf("translate %s (%s): %w", planItem.source.SourcePath, output.Lang, err)
 			}
 
+			outputAbs := filepath.Join(root, output.OutputPath)
 			if err := os.MkdirAll(filepath.Dir(outputAbs), 0o755); err != nil {
 				return err
 			}
@@ -126,23 +183,24 @@ func Translate(root string, opts TranslateOptions) error {
 				return err
 			}
 
-			lock.SourceHash = sourceHash
-			if lock.Outputs == nil {
-				lock.Outputs = map[string]locks.OutputLock{}
+			planItem.lock.SourceHash = planItem.sourceHash
+			if planItem.lock.Outputs == nil {
+				planItem.lock.Outputs = map[string]locks.OutputLock{}
 			}
-			lock.Outputs[output.Lang] = locks.OutputLock{
+			planItem.lock.Outputs[output.Lang] = locks.OutputLock{
 				Path:        output.OutputPath,
 				Hash:        ctxhash.HashString(translation),
-				ContextHash: contextHash,
+				ContextHash: planItem.contextHashes[output.Lang],
 				CheckedAt:   nowUTC(),
 			}
 			updated = true
+			progress.Increment(label)
 		}
 
 		if opts.DryRun || !updated {
 			continue
 		}
-		if err := locks.Write(root, source.SourcePath, *lock); err != nil {
+		if err := locks.Write(root, planItem.source.SourcePath, *planItem.lock); err != nil {
 			return err
 		}
 	}
@@ -158,6 +216,8 @@ func Clean(root string, opts CleanOptions) error {
 	if len(pl.Sources) == 0 {
 		return errors.New("no sources found")
 	}
+
+	reporter := ensureReporter(opts.Reporter)
 
 	rootAbs, err := filepath.Abs(root)
 	if err != nil {
@@ -185,9 +245,11 @@ func Clean(root string, opts CleanOptions) error {
 			}
 			if wasRemoved {
 				removed++
+				reporter.CleanRemoved(output.OutputPath)
 			}
 			if wasMissing {
 				missing++
+				reporter.CleanMissing(output.OutputPath)
 			}
 		}
 		lockPath := locks.LockPath(root, source.SourcePath)
@@ -197,9 +259,11 @@ func Clean(root string, opts CleanOptions) error {
 		}
 		if wasRemoved {
 			lockRemoved++
+			reporter.CleanRemoved(lockPath)
 		}
 		if wasMissing {
 			missing++
+			reporter.CleanMissing(lockPath)
 		}
 	}
 
@@ -242,9 +306,11 @@ func Clean(root string, opts CleanOptions) error {
 				}
 				if wasRemoved {
 					removed++
+					reporter.CleanRemoved(output.Path)
 				}
 				if wasMissing {
 					missing++
+					reporter.CleanMissing(output.Path)
 				}
 			}
 			wasRemoved, wasMissing, err := removePath(path, path, opts.DryRun)
@@ -253,9 +319,11 @@ func Clean(root string, opts CleanOptions) error {
 			}
 			if wasRemoved {
 				lockRemoved++
+				reporter.CleanRemoved(path)
 			}
 			if wasMissing {
 				missing++
+				reporter.CleanMissing(path)
 			}
 			return nil
 		})
@@ -264,7 +332,7 @@ func Clean(root string, opts CleanOptions) error {
 		}
 	}
 
-	fmt.Printf("cleaned %d files, %d missing, removed %d lockfiles\n", removed, missing, lockRemoved)
+	reporter.CleanSummary(removed, missing, lockRemoved)
 	return nil
 }
 
@@ -276,6 +344,14 @@ func Check(root string, opts CheckOptions) error {
 	if len(pl.Sources) == 0 {
 		return errors.New("no sources found")
 	}
+
+	reporter := ensureReporter(opts.Reporter)
+	total := 0
+	for _, source := range pl.Sources {
+		total += len(source.Outputs)
+	}
+	progress := reporter.Progress("check", total)
+	defer progress.Done()
 
 	checker := checks.Checker{Root: root}
 	for _, source := range pl.Sources {
@@ -297,6 +373,8 @@ func Check(root string, opts CheckOptions) error {
 			if strings.TrimSpace(opts.CheckCmd) != "" {
 				checkCmds = nil
 			}
+			label := fmt.Sprintf("%s -> %s (%s)", source.SourcePath, output.OutputPath, output.Lang)
+			progress.Increment(label)
 			if err := checker.Validate(context.Background(), source.Format, string(outputBytes), string(sourceBytes), checks.Options{
 				Preserve:  source.Entry.Preserve,
 				CheckCmd:  checkCmd,
@@ -309,7 +387,7 @@ func Check(root string, opts CheckOptions) error {
 	return nil
 }
 
-func Status(root string, _ StatusOptions) error {
+func Status(root string, opts StatusOptions) error {
 	pl, err := plan.Build(root)
 	if err != nil {
 		return err
@@ -318,6 +396,7 @@ func Status(root string, _ StatusOptions) error {
 		return errors.New("no sources found")
 	}
 
+	reporter := ensureReporter(opts.Reporter)
 	missing := 0
 	stale := 0
 	upToDate := 0
@@ -339,7 +418,7 @@ func Status(root string, _ StatusOptions) error {
 			if err != nil {
 				if os.IsNotExist(err) {
 					missing++
-					fmt.Printf("missing %s -> %s (%s)\n", source.SourcePath, output.OutputPath, output.Lang)
+					reporter.Status(StatusMissing, source.SourcePath, output.OutputPath, output.Lang)
 					continue
 				}
 				return err
@@ -347,32 +426,32 @@ func Status(root string, _ StatusOptions) error {
 			contextHash := ctxhash.HashStrings(source.ContextPartsFor(output.Lang))
 			if lock == nil || lock.SourceHash != sourceHash {
 				stale++
-				fmt.Printf("stale %s -> %s (%s)\n", source.SourcePath, output.OutputPath, output.Lang)
+				reporter.Status(StatusStale, source.SourcePath, output.OutputPath, output.Lang)
 				continue
 			}
 			outputLock, ok := lock.Outputs[output.Lang]
 			if !ok {
 				stale++
-				fmt.Printf("stale %s -> %s (%s)\n", source.SourcePath, output.OutputPath, output.Lang)
+				reporter.Status(StatusStale, source.SourcePath, output.OutputPath, output.Lang)
 				continue
 			}
 			lockedContextHash := lockContextHash(lock, output.Lang)
 			if lockedContextHash != contextHash {
 				stale++
-				fmt.Printf("stale %s -> %s (%s)\n", source.SourcePath, output.OutputPath, output.Lang)
+				reporter.Status(StatusStale, source.SourcePath, output.OutputPath, output.Lang)
 				continue
 			}
 			if outputLock.Path != output.OutputPath {
 				stale++
-				fmt.Printf("stale %s -> %s (%s)\n", source.SourcePath, output.OutputPath, output.Lang)
+				reporter.Status(StatusStale, source.SourcePath, output.OutputPath, output.Lang)
 				continue
 			}
 			upToDate++
-			fmt.Printf("ok %s -> %s (%s)\n", source.SourcePath, output.OutputPath, output.Lang)
+			reporter.Status(StatusOK, source.SourcePath, output.OutputPath, output.Lang)
 		}
 	}
 
-	fmt.Printf("\nSummary: %d ok, %d stale, %d missing\n", upToDate, stale, missing)
+	reporter.StatusSummary(upToDate, stale, missing)
 	if stale > 0 || missing > 0 {
 		return errors.New("translations out of date")
 	}
@@ -407,7 +486,6 @@ func resolveWithinRoot(rootAbs, rel string) (string, error) {
 
 func removePath(path, display string, dryRun bool) (removed bool, missing bool, err error) {
 	if dryRun {
-		fmt.Printf("remove %s\n", display)
 		return false, false, nil
 	}
 	if err := os.Remove(path); err != nil {
@@ -416,7 +494,6 @@ func removePath(path, display string, dryRun bool) (removed bool, missing bool, 
 		}
 		return false, false, err
 	}
-	fmt.Printf("removed %s\n", display)
 	return true, false, nil
 }
 

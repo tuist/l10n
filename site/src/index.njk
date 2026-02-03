@@ -1,4 +1,3 @@
-<!-- DEBUG locale={{ locale }} localeCode={{ localeCode }} -->
 {% set home = "home" | localizedData(locale) %}
 {% set ui = "ui" | localizedData(locale) %}
 <section class="section hero">
@@ -132,20 +131,3 @@ output = "site/src/_data/i18n/{lang}/{basename}.{ext}"
   </div>
 </section>
 
-<section id="updates" class="section">
-  <div class="container">
-    <h2 class="reveal">{{ home.updates.title }}</h2>
-    {% set posts = collections.posts | postsByLocale(locale) %}
-    <div class="blog-list">
-      {% for post in posts %}
-      <article class="blog-card reveal">
-        <a href="{{ post.url }}">
-          <p class="meta">{{ post.date | readableDate(locale) }}</p>
-          <h3>{{ post.data.title }}</h3>
-          <p class="summary">{{ post.data.summary }}</p>
-        </a>
-      </article>
-      {% endfor %}
-    </div>
-  </div>
-</section>

@@ -93,11 +93,7 @@ function isHomePage(data) {
 module.exports = {
   eleventyComputed: {
     locale: (data) => {
-      const result = resolveLocale(data);
-      if (data.page && data.page.filePathStem === "/index") {
-        console.log(`[DEBUG locale] localeCode=${data.localeCode}, locale=${data.locale}, result=${result}`);
-      }
-      return result;
+      return resolveLocale(data);
     },
     permalink: (data) => {
       if (data.permalink) {
