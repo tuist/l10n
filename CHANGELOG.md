@@ -1,6 +1,20 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.7.1] - 2026-02-03
+
+### Bug Fixes
+- fix: prevent code snippet horizontal overflow on mobile
+
+Add max-width: 100vw and box-sizing: border-box to mobile code blocks
+so long lines scroll within the block instead of overflowing the viewport.
+
+https://claude.ai/code/session_01UJZim24FwSdGEt6A3GLzAe
+
+
+### Other
+- Merge pull request #3 from tuist/claude/fix-code-snippet-overflow-Re9Jo
+
 ## [v0.7.0] - 2026-02-03
 
 ### Features
