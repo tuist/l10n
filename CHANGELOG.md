@@ -1,6 +1,11 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.6.0] - 2026-02-03
+
+### Features
+- feat: format tool lines
+
 ## [v0.5.0] - 2026-02-03
 
 ### Features
