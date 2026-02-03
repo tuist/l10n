@@ -21,7 +21,7 @@ footer = """
 conventional_commits = false
 filter_unconventional = false
 split_commits = false
-tag_pattern = "v[0-9]*"
+tag_pattern = "[0-9]*"
 commit_parsers = [
   { message = "^feat", group = "Features", bump = "minor" },
   { message = "^fix", group = "Bug Fixes", bump = "patch" },
@@ -35,4 +35,4 @@ commit_parsers = [
 ]
 
 [bump]
-initial_tag = "v0.1.0"
+initial_tag = "0.1.0"
