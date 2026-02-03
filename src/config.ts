@@ -261,16 +261,14 @@ export function applyAgentDefaults(cfg: AgentConfig): AgentConfig {
       if (!(out.base_url ?? "").trim()) out.base_url = "https://api.anthropic.com";
       if (!(out.api_key_env ?? "").trim()) out.api_key_env = "ANTHROPIC_API_KEY";
       break;
-    case "local-claude":
     case "claude":
-      // No API key needed for local Claude CLI
+      // No API key needed for Claude CLI (uses local authentication)
       out.base_url = out.base_url?.trim() || "";
       out.api_key = "";
       out.api_key_env = "";
       break;
-    case "local-codex":
     case "codex":
-      // No API key needed for local Codex CLI
+      // No API key needed for Codex CLI (uses local authentication)
       out.base_url = out.base_url?.trim() || "";
       out.api_key = "";
       out.api_key_env = "";
