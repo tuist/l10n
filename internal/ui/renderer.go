@@ -130,7 +130,6 @@ type progressReporter struct {
 	total   int
 	current int
 	label   string
-	last    string
 	enabled bool
 }
 
@@ -148,7 +147,6 @@ func (p *progressReporter) Done() {
 	}
 	p.current = p.total
 	p.renderLine()
-	fmt.Fprintln(p.out)
 }
 
 func (p *progressReporter) renderLine() {
@@ -160,8 +158,7 @@ func (p *progressReporter) renderLine() {
 	percent := float64(p.current) / float64(p.total)
 	bar := p.model.ViewAs(percent)
 	line := fmt.Sprintf("%s %d/%d %s", bar, p.current, p.total, truncate(p.label, 64))
-	fmt.Fprintf(p.out, "\r\033[2K%s", line)
-	p.last = line
+	fmt.Fprintln(p.out, line)
 }
 
 type noopProgress struct{}
