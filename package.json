@@ -1,0 +1,31 @@
+{
+  "name": "l10n",
+  "version": "0.6.0",
+  "description": "Localize like you ship software.",
+  "type": "module",
+  "bin": {
+    "l10n": "./dist/l10n"
+  },
+  "scripts": {
+    "build": "bun build src/cli.ts --compile --outfile dist/l10n",
+    "dev": "bun run src/cli.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "format": "biome format --write src/",
+    "format:check": "biome format src/"
+  },
+  "dependencies": {
+    "@iarna/toml": "^2.2.5",
+    "js-yaml": "^4.1.0",
+    "minimatch": "^10.0.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.0",
+    "@types/js-yaml": "^4.0.9",
+    "bun-types": "latest",
+    "typescript": "^5.7.0"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ]
+}

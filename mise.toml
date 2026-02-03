@@ -1,5 +1,5 @@
 [tools]
-go = "1.22"
+bun = "1"
 node = "20"
 git-cliff = "2.10.0"
 "github:tuist/l10n" = "latest"

@@ -1,5 +1,7 @@
 /site/node_modules
 /site/dist
+/node_modules
+/dist
 /.l10n/tmp
 /l10n
 .env
