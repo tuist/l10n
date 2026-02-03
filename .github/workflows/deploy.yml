@@ -1,160 +1,36 @@
-name: Release
+name: Deploy to Cloudflare Workers
 
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      version:
-        description: "The version to release (e.g. v0.2.0)."
-        type: string
-
-permissions:
-  contents: write
 
 jobs:
-  prepare:
-    name: Prepare release
+  deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    if: "!startsWith(github.event.head_commit.message, '[Release]')"
-    outputs:
-      should_release: ${{ steps.releasable.outputs.should_release }}
-      version: ${{ steps.next-version.outputs.version }}
-      release_notes: ${{ steps.release-notes.outputs.release_notes }}
-      commit_sha: ${{ steps.auto-commit.outputs.commit_hash }}
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-        with:
-          fetch-depth: 0
-      - name: Install git-cliff
-        uses: taiki-e/install-action@v2
-        with:
-          tool: git-cliff@2.10.0
-      - name: Check if there are releasable changes
-        id: releasable
-        run: |
-          bumped_output=$(git cliff --config cliff.toml --bump --unreleased)
-          changelog_content=$(cat CHANGELOG.md)
+      - name: Checkout
+        uses: actions/checkout@v4
 
-          bumped_hash=$(echo -n "$bumped_output" | shasum -a 256 | awk '{print $1}')
-          changelog_hash=$(echo -n "$changelog_content" | shasum -a 256 | awk '{print $1}')
+      - name: Set up mise
+        uses: jdx/mise-action@v2
+        with:
+          cache: true
 
-          if [ "$bumped_hash" != "$changelog_hash" ]; then
-            echo "should_release=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "should_release=false" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Get next version
-        id: next-version
-        if: steps.releasable.outputs.should_release == 'true'
-        run: |
-          if [ -n "${{ github.event.inputs.version }}" ]; then
-            echo "version=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "version=$(git cliff --config cliff.toml --bumped-version)" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Update CHANGELOG.md
-        if: steps.releasable.outputs.should_release == 'true'
-        run: git cliff --config cliff.toml --bump -o CHANGELOG.md
-      - name: Commit changes
-        id: auto-commit
-        if: steps.releasable.outputs.should_release == 'true'
-        uses: stefanzweifel/git-auto-commit-action@v7
-        with:
-          commit_options: "--allow-empty"
-          tagging_message: ${{ steps.next-version.outputs.version }}
-          skip_dirty_check: true
-          commit_message: "[Release] l10n ${{ steps.next-version.outputs.version }}"
-      - name: Get release notes
-        id: release-notes
-        if: steps.releasable.outputs.should_release == 'true'
-        run: |
-          echo "release_notes<<EOF" >> "$GITHUB_OUTPUT"
-          git cliff --config cliff.toml --latest --strip all --body "$(cat .github/release-notes.tmpl)" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
+      - name: Install tools
+        run: mise install
 
-  build:
-    name: Build artifacts
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    needs: prepare
-    if: needs.prepare.outputs.should_release == 'true'
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - goos: linux
-            goarch: amd64
-            triple: x86_64-unknown-linux-gnu
-            ext: ""
-          - goos: linux
-            goarch: arm64
-            triple: aarch64-unknown-linux-gnu
-            ext: ""
-          - goos: darwin
-            goarch: amd64
-            triple: x86_64-apple-darwin
-            ext: ""
-          - goos: darwin
-            goarch: arm64
-            triple: aarch64-apple-darwin
-            ext: ""
-          - goos: windows
-            goarch: amd64
-            triple: x86_64-pc-windows-msvc
-            ext: ".exe"
-    steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-        with:
-          fetch-depth: 0
-          ref: ${{ needs.prepare.outputs.version }}
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: go.mod
-      - name: Build
+      - name: Install site dependencies
+        run: npm ci
+        working-directory: site
+
+      - name: Build site
+        run: npm run build
+        working-directory: site
+
+      - name: Deploy to Cloudflare Workers
         env:
-          GOOS: ${{ matrix.goos }}
-          GOARCH: ${{ matrix.goarch }}
-          CGO_ENABLED: 0
-        run: |
-          mkdir -p dist
-          binary="l10n${{ matrix.ext }}"
-          go build -trimpath -ldflags "-s -w" -o "dist/${binary}" ./cmd/l10n
-          tar -czf "dist/l10n-${{ matrix.triple }}.tar.gz" -C dist "${binary}"
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: l10n-${{ matrix.triple }}
-          path: dist/l10n-${{ matrix.triple }}.tar.gz
-
-  release:
-    name: Publish release
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: [prepare, build]
-    if: needs.prepare.outputs.should_release == 'true'
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          path: dist
-      - name: Gather artifacts
-        run: |
-          mkdir -p release
-          find dist -name "*.tar.gz" -exec mv {} release/ \;
-          cd release
-          sha256sum *.tar.gz > SHA256.txt
-          sha512sum *.tar.gz > SHA512.txt
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          draft: false
-          name: ${{ needs.prepare.outputs.version }}
-          tag_name: ${{ needs.prepare.outputs.version }}
-          body: ${{ needs.prepare.outputs.release_notes }}
-          target_commitish: ${{ needs.prepare.outputs.commit_sha }}
-          files: |
-            release/*.tar.gz
-            release/SHA256.txt
-            release/SHA512.txt
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: wrangler deploy
