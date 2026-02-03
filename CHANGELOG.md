@@ -1,6 +1,17 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.12.0] - 2026-02-03
+
+### Features
+- feat: add experimental phase warning admonition to README
+
+https://claude.ai/code/session_01L2isFCmuDDeeTPMUANrqjd
+
+
+### Other
+- Merge pull request #9 from tuist/claude/add-experimental-warning-5CB8Q
+
 ## [v0.11.0] - 2026-02-03
 
 ### Features
