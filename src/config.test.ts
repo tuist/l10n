@@ -143,6 +143,72 @@ describe("applyAgentDefaults", () => {
     expect(result.chat_completions_path).toBe("/v1/messages");
     expect(result.api_key_env).toBe("ANTHROPIC_API_KEY");
   });
+
+  test("sets local-claude defaults", () => {
+    const result = applyAgentDefaults({
+      role: "coordinator",
+      provider: "local-claude",
+      base_url: "",
+      chat_completions_path: "",
+      api_key: "",
+      api_key_env: "",
+      model: "sonnet",
+      headers: {},
+      timeout_seconds: 120,
+    });
+    expect(result.provider).toBe("local-claude");
+    expect(result.base_url).toBe("");
+    expect(result.api_key).toBe("");
+    expect(result.api_key_env).toBe("");
+  });
+
+  test("sets local-claude with custom path", () => {
+    const result = applyAgentDefaults({
+      role: "translator",
+      provider: "local-claude",
+      base_url: "/usr/local/bin/claude",
+      chat_completions_path: "",
+      api_key: "",
+      api_key_env: "",
+      model: "haiku",
+      headers: {},
+      timeout_seconds: 0,
+    });
+    expect(result.base_url).toBe("/usr/local/bin/claude");
+  });
+
+  test("sets local-codex defaults", () => {
+    const result = applyAgentDefaults({
+      role: "translator",
+      provider: "local-codex",
+      base_url: "",
+      chat_completions_path: "",
+      api_key: "",
+      api_key_env: "",
+      model: "gpt-4",
+      headers: {},
+      timeout_seconds: 0,
+    });
+    expect(result.provider).toBe("local-codex");
+    expect(result.base_url).toBe("");
+    expect(result.api_key).toBe("");
+    expect(result.api_key_env).toBe("");
+  });
+
+  test("sets local-codex with custom path", () => {
+    const result = applyAgentDefaults({
+      role: "coordinator",
+      provider: "local-codex",
+      base_url: "/opt/codex/bin/codex",
+      chat_completions_path: "",
+      api_key: "",
+      api_key_env: "",
+      model: "claude-3-5-sonnet",
+      headers: {},
+      timeout_seconds: 60,
+    });
+    expect(result.base_url).toBe("/opt/codex/bin/codex");
+  });
 });
 
 describe("resolveAgents", () => {

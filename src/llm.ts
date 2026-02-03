@@ -122,6 +122,12 @@ export async function chat(
   if (provider === "anthropic") {
     return chatAnthropic(cfg, model, messages);
   }
+  if (provider === "local-claude") {
+    return chatLocalClaude(cfg, model, messages);
+  }
+  if (provider === "local-codex") {
+    return chatLocalCodex(cfg, model, messages);
+  }
   return chatOpenAI(cfg, model, messages);
 }
 
@@ -265,6 +271,134 @@ async function chatAnthropic(
       throw new Error("llm response missing text");
     }
     return text;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function chatLocalClaude(
+  cfg: AgentConfig,
+  model: string,
+  messages: ChatMessage[],
+): Promise<string> {
+  const cliPath = cfg.base_url?.trim() || "claude";
+
+  const systemParts: string[] = [];
+  const userMessages: string[] = [];
+  for (const msg of messages) {
+    const role = (msg.role ?? "").toLowerCase().trim();
+    switch (role) {
+      case "system":
+        if (msg.content.trim()) systemParts.push(msg.content);
+        break;
+      case "user":
+        userMessages.push(msg.content);
+        break;
+      case "assistant":
+        userMessages.push(`[ASSISTANT]: ${msg.content}`);
+        break;
+      default:
+        throw new Error(`unsupported message role "${msg.role}" for local-claude`);
+    }
+  }
+
+  if (userMessages.length === 0) {
+    throw new Error("llm request requires user messages");
+  }
+
+  const prompt = [
+    ...systemParts.map((s) => `[SYSTEM]: ${s}`),
+    ...userMessages.map((m) => m.startsWith("[ASSISTANT]:") ? m : `[USER]: ${m}`),
+  ].join("\n\n");
+
+  const timeout = cfg.timeout_seconds ? cfg.timeout_seconds * 1000 : DEFAULT_TIMEOUT_MS;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const proc = Bun.spawn({
+      cmd: [cliPath, "ai", "-p", "--no-think"],
+      stdin: "pipe",
+      stdout: "pipe",
+      stderr: "pipe",
+      timeout,
+    });
+
+    await proc.stdin.write(prompt);
+    proc.stdin.close();
+
+    const output = await new Response(proc.stdout).text();
+    const error = await new Response(proc.stderr).text();
+
+    if (proc.exitCode !== 0) {
+      throw new Error(`claude CLI error (exit ${proc.exitCode}): ${error || "unknown error"}`);
+    }
+
+    return output.trim();
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function chatLocalCodex(
+  cfg: AgentConfig,
+  model: string,
+  messages: ChatMessage[],
+): Promise<string> {
+  const cliPath = cfg.base_url?.trim() || "codex";
+
+  const systemParts: string[] = [];
+  const userMessages: string[] = [];
+  for (const msg of messages) {
+    const role = (msg.role ?? "").toLowerCase().trim();
+    switch (role) {
+      case "system":
+        if (msg.content.trim()) systemParts.push(msg.content);
+        break;
+      case "user":
+        userMessages.push(msg.content);
+        break;
+      case "assistant":
+        userMessages.push(`[ASSISTANT]: ${msg.content}`);
+        break;
+      default:
+        throw new Error(`unsupported message role "${msg.role}" for local-codex`);
+    }
+  }
+
+  if (userMessages.length === 0) {
+    throw new Error("llm request requires user messages");
+  }
+
+  const prompt = [
+    ...systemParts.map((s) => `[SYSTEM]: ${s}`),
+    ...userMessages.map((m) => m.startsWith("[ASSISTANT]:") ? m : `[USER]: ${m}`),
+  ].join("\n\n");
+
+  const timeout = cfg.timeout_seconds ? cfg.timeout_seconds * 1000 : DEFAULT_TIMEOUT_MS;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const proc = Bun.spawn({
+      cmd: [cliPath, "complete", "--prompt"],
+      stdin: "pipe",
+      stdout: "pipe",
+      stderr: "pipe",
+      timeout,
+    });
+
+    await proc.stdin.write(prompt);
+    proc.stdin.close();
+
+    const output = await new Response(proc.stdout).text();
+    const error = await new Response(proc.stderr).text();
+
+    if (proc.exitCode !== 0) {
+      throw new Error(`codex CLI error (exit ${proc.exitCode}): ${error || "unknown error"}`);
+    }
+
+    return output.trim();
   } finally {
     clearTimeout(timer);
   }
