@@ -30,7 +30,7 @@ commit_parsers = [
   { message = "^docs", group = "Documentation", bump = "patch" },
   { message = "^test", group = "Tests", bump = "patch" },
   { message = "^chore", group = "Chores", bump = "patch" },
-  { message = "^\[Release\]", skip = true },
+  { message = "^\\[Release\\]", skip = true },
   { message = ".*", group = "Other", bump = "patch" },
 ]
 
