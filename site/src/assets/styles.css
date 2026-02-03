@@ -429,6 +429,8 @@ p:last-child { margin-bottom: 0; }
   border-radius: var(--radius-lg);
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  min-width: 0;
 }
 
 .config-card h3 {
@@ -939,10 +941,9 @@ code[class*="language-"] {
   pre[class*="language-"] {
     font-size: 0.75rem;
     padding: 1rem;
-    margin-left: -5vw;
-    margin-right: -5vw;
-    border-radius: 0;
-    width: calc(100% + 10vw);
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .cli-item {
