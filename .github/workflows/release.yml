@@ -77,7 +77,7 @@ jobs:
 
   build:
     name: Build artifacts
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     needs: prepare
     if: needs.prepare.outputs.should_release == 'true'
@@ -85,24 +85,24 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - goos: linux
-            goarch: amd64
+          - os: ubuntu-latest
+            target: bun-linux-x64
             triple: x86_64-unknown-linux-gnu
             ext: ""
-          - goos: linux
-            goarch: arm64
+          - os: ubuntu-latest
+            target: bun-linux-arm64
             triple: aarch64-unknown-linux-gnu
             ext: ""
-          - goos: darwin
-            goarch: amd64
+          - os: macos-latest
+            target: bun-darwin-x64
             triple: x86_64-apple-darwin
             ext: ""
-          - goos: darwin
-            goarch: arm64
+          - os: macos-latest
+            target: bun-darwin-arm64
             triple: aarch64-apple-darwin
             ext: ""
-          - goos: windows
-            goarch: amd64
+          - os: windows-latest
+            target: bun-windows-x64
             triple: x86_64-pc-windows-msvc
             ext: ".exe"
     steps:
@@ -110,19 +110,16 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ needs.prepare.outputs.version }}
-      - uses: actions/setup-go@v5
+      - uses: oven-sh/setup-bun@v2
         with:
-          go-version-file: go.mod
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
       - name: Build
-        env:
-          GOOS: ${{ matrix.goos }}
-          GOARCH: ${{ matrix.goarch }}
-          CGO_ENABLED: 0
         run: |
           mkdir -p dist
-          binary="l10n${{ matrix.ext }}"
-          go build -trimpath -ldflags "-s -w" -o "dist/${binary}" ./cmd/l10n
-          tar -czf "dist/l10n-${{ matrix.triple }}.tar.gz" -C dist "${binary}"
+          bun build src/cli.ts --compile --target=${{ matrix.target }} --outfile "dist/l10n${{ matrix.ext }}"
+          tar -czf "dist/l10n-${{ matrix.triple }}.tar.gz" -C dist "l10n${{ matrix.ext }}"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
