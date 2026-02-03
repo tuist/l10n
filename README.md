@@ -1,8 +1,8 @@
-# l10n
+# l10n 🌍
 
 Localize like you ship software. `l10n` is a Go CLI that translates files locally using LLMs, keeps content in‑repo, and validates output with your own tooling.
 
-## Install
+## Install 📦
 
 ```bash
 mise use github:tuist/l10n
@@ -14,9 +14,9 @@ Or build from source:
 go build ./cmd/l10n
 ```
 
-## Quick start
+## Quick start 🚀
 
-Create a `L10N.md` at the repo root with TOML frontmatter:
+Run `l10n init` for a guided setup, or create a `L10N.md` at the repo root with TOML frontmatter:
 
 ```markdown
 +++
@@ -58,7 +58,7 @@ Validate outputs:
 l10n check
 ```
 
-## Configuration
+## Configuration ⚙️
 
 ### `L10N.md` frontmatter
 
@@ -143,8 +143,9 @@ Context is additive per language: general `L10N.md` bodies plus matching `L10N/<
 
 Per‑file lockfiles are written to `.l10n/locks/` and include source hash plus per‑language context hashes and output metadata.
 
-## Commands
+## Commands ⌨️
 
+- `l10n init` — initialize a repo with a starter `L10N.md`
 - `l10n translate` — generate translations (YOLO by default)
 - `l10n check` — validate outputs (fails if missing)
 - `l10n status` — report missing/stale outputs
@@ -152,7 +153,7 @@ Per‑file lockfiles are written to `.l10n/locks/` and include source hash plus 
 
 Use `--no-color` or set `NO_COLOR=1` to disable styled output.
 
-## Development
+## Development 🧪
 
 ```bash
 go test ./...
@@ -166,6 +167,6 @@ npm install
 npm run dev
 ```
 
-## License
+## License 📄
 
 MIT
