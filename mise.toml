@@ -1,6 +1,7 @@
 [tools]
 go = "1.22"
 node = "20"
+git-cliff = "2.10.0"
 
 [env]
 _.file = ".env"
