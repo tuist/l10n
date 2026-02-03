@@ -1,6 +1,18 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.2.0] - 2026-02-03
+
+### Features
+- feat: add first-party tools and website section
+- feat: surface tool verification steps
+
+
+### Other
+- Add init command and path flag
+- Rename release workflow to deploy
+- Restore release workflow and deploy site
+
 ## [v0.1.4] - 2026-02-03
 
 ### Other
