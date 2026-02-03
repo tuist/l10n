@@ -709,6 +709,20 @@ code[class*="language-"] {
   font-size: 0.9rem;
 }
 
+/* ——— Blog listing page ——— */
+.blog-hero {
+  padding-top: 4rem;
+  padding-bottom: 1rem;
+}
+
+.blog-hero h1 {
+  margin-bottom: 0.5rem;
+}
+
+.blog-listing {
+  padding-top: 1rem;
+}
+
 /* ——— Post page ——— */
 .post-hero {
   padding-top: 4rem;
