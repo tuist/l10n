@@ -174,3 +174,23 @@ output = "site/src/_data/i18n/{lang}/{basename}.{ext}"
     </div>
   </div>
 </section>
+
+<section id="blog" class="section">
+  <div class="container">
+    <h2 class="reveal">{{ home.updates.title }}</h2>
+    {% set localePosts = collections.posts | postsByLocale(locale) %}
+    {% if localePosts.length %}
+    <div class="blog-list">
+      {% for post in localePosts %}
+      <article class="blog-card reveal">
+        <a href="{{ post.url }}">
+          <p class="meta">{{ post.date | readableDate(locale) }}</p>
+          <h3>{{ post.data.title }}</h3>
+          <p class="summary">{{ post.data.summary }}</p>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>

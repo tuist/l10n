@@ -101,7 +101,9 @@ module.exports = function (eleventyConfig) {
   });
 
   eleventyConfig.addFilter("postsByLocale", (posts, locale) => {
-    return posts.filter((post) => post.data.locale === locale);
+    return posts.filter((post) => {
+      return localeFromStem(post.filePathStem || "") === locale;
+    });
   });
 
   return {

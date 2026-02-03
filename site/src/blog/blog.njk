@@ -1,0 +1,40 @@
+---
+layout: layouts/base.njk
+title: Blog
+description: "News, insights, and updates from the l10n team about agentic localization, developer workflows, and shipping software in every language."
+pagination:
+  data: localeCodes
+  size: 1
+  alias: localeCode
+permalink: "{% if localeCode == 'en' %}/blog/{% else %}/{{ localeCode }}/blog/{% endif %}"
+eleventyExcludeFromCollections: true
+---
+{% set locale = localeCode or 'en' %}
+{% set ui = "ui" | localizedData(locale) %}
+<section class="section blog-hero">
+  <div class="container">
+    <h1>{{ ui.nav.blog }}</h1>
+    <p class="lead muted">Thoughts on localization, developer experience, and building tools that get out of your way.</p>
+  </div>
+</section>
+
+<section class="section blog-listing">
+  <div class="container">
+    {% set localePosts = collections.posts | postsByLocale(locale) %}
+    {% if localePosts.length %}
+    <div class="blog-list">
+      {% for post in localePosts %}
+      <article class="blog-card">
+        <a href="{{ post.url }}">
+          <p class="meta">{{ post.date | readableDate(locale) }}</p>
+          <h3>{{ post.data.title }}</h3>
+          <p class="summary">{{ post.data.summary }}</p>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="muted">No posts yet.</p>
+    {% endif %}
+  </div>
+</section>

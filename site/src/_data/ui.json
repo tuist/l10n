@@ -4,7 +4,8 @@
     "tools": "Tools",
     "config": "Config",
     "features": "Features",
-    "updates": "Updates"
+    "updates": "Updates",
+    "blog": "Blog"
   },
   "footer": {
     "blurb_prefix": "MIT licensed. Built by ",
