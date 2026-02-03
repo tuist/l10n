@@ -1,6 +1,11 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.1.1] - 2026-02-03
+
+### Other
+- Adjust git-cliff tags for mise compatibility
+
 ## [v0.1.0] - 2026-02-03
 
 ### Other
