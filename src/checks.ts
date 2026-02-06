@@ -39,12 +39,12 @@ export async function validate(
   opts: CheckOptions,
 ): Promise<void> {
   if (opts.reporter && opts.label?.trim()) {
-    opts.reporter.activity("Validating", opts.current ?? 0, opts.total ?? 0, opts.label);
+    opts.reporter.step("Validating", opts.current ?? 0, opts.total ?? 0, opts.label);
   }
 
   // Syntax validation
   if (opts.reporter) {
-    opts.reporter.tool("syntax-validator", "parse " + formatLabel(format));
+    opts.reporter.log("Checking", "syntax-validator: parse " + formatLabel(format));
   }
   const syntaxErr = validateSyntax(format, output);
   if (syntaxErr) {
@@ -55,7 +55,7 @@ export async function validate(
   const preserveKinds = resolvePreserve(opts.preserve);
   if (Object.keys(preserveKinds).length > 0) {
     if (opts.reporter) {
-      opts.reporter.tool("preserve-check", "verify preserved tokens");
+      opts.reporter.log("Checking", "preserve-check: verify preserved tokens");
     }
     const preserveErr = validatePreserve(output, source, preserveKinds);
     if (preserveErr) {
@@ -67,7 +67,7 @@ export async function validate(
   const cmd = selectCheckCmd(format, opts.checkCmd, opts.checkCmds);
   if (cmd) {
     if (opts.reporter) {
-      opts.reporter.tool("custom-command", "run check_cmd");
+      opts.reporter.log("Checking", "custom-command: run check_cmd");
     }
     await runExternal(root, cmd, output);
   }

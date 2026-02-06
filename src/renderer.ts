@@ -1,18 +1,52 @@
-import type { Reporter, StatusKind, ProgressReporter } from "./reporter.js";
+import type { Reporter, Verb, ProgressReporter } from "./reporter.js";
 
-// ANSI color helpers
+// ── ANSI helpers (standard 16-color) ────────────────────────────────
+
 const ESC = "\x1b[";
 const RESET = ESC + "0m";
 const BOLD = ESC + "1m";
+const GREEN = ESC + "32m";
+const CYAN = ESC + "36m";
+const YELLOW = ESC + "33m";
+const RED = ESC + "31m";
+const WHITE = ESC + "37m";
+const CLEAR_LINE = ESC + "2K";
 
-function ansi256fg(code: number): string {
-  return `${ESC}38;5;${code}m`;
+function verbColor(verb: Verb): string {
+  switch (verb) {
+    case "Ok":
+    case "Translated":
+    case "Removed":
+    case "Cleaned":
+    case "Created":
+    case "Updated":
+      return GREEN;
+    case "Translating":
+    case "Validating":
+    case "Checking":
+      return CYAN;
+    case "Stale":
+    case "Skipped":
+    case "Dry run":
+      return YELLOW;
+    case "Missing":
+      return RED;
+    case "Summary":
+    case "Info":
+      return WHITE;
+  }
 }
 
-function style(text: string, ...codes: string[]): string {
-  if (codes.length === 0) return text;
-  return codes.join("") + text + RESET;
+const VERB_COL = 12;
+
+function formatLine(verb: string, message: string, color: boolean): string {
+  const padded = verb.padStart(VERB_COL);
+  if (!color) return padded + "  " + message;
+  const col = verbColor(verb as Verb);
+  return BOLD + col + padded + RESET + "  " + message;
 }
+
+// ── Renderer ────────────────────────────────────────────────────────
 
 export interface RendererOptions {
   noColor: boolean;
@@ -22,136 +56,71 @@ export interface RendererOptions {
 export class Renderer implements Reporter {
   private out: NodeJS.WritableStream;
   private isTTY: boolean;
-  private noColor: boolean;
+  private color: boolean;
+  private inPlaceLine = false;
 
   constructor(opts: RendererOptions) {
     this.out = opts.out ?? process.stdout;
     this.isTTY = typeof (this.out as any).isTTY === "boolean" ? (this.out as any).isTTY : false;
-    this.noColor = opts.noColor || !this.isTTY;
+    this.color = !opts.noColor && this.isTTY;
   }
 
-  info(message: string): void {
-    if (!message.trim()) return;
-    this.println(this.noColor ? message : style(message, ansi256fg(69)));
+  log(verb: Verb, message: string): void {
+    this.finalize();
+    this.out.write(formatLine(verb, message, this.color) + "\n");
   }
 
-  tool(name: string, detail: string): void {
-    const label = this.noColor ? "Tool" : style("Tool", BOLD, ansi256fg(105));
-    const toolName = this.noColor ? name : style(name, ansi256fg(244));
-    let msg = `${label} (${toolName})`;
-    if (detail.trim()) msg += ": " + detail;
-    this.println(msg);
-  }
+  step(verb: Verb, current: number, total: number, message: string): void {
+    const label = `[${current}/${total}] ${message}`;
+    const line = formatLine(verb, label, this.color);
 
-  activity(stage: string, current: number, total: number, label: string): void {
-    const line = formatActivityLine(stage, current, total, label);
-    if (!this.isTTY || this.noColor) {
-      this.println(line);
-      return;
-    }
-    this.println(this.tintProgressLine(line, current, total));
-  }
-
-  status(kind: StatusKind, source: string, output: string, lang: string): void {
-    let label: string;
-    if (this.noColor) {
-      label = kind;
-    } else {
-      switch (kind) {
-        case "ok":
-          label = style(kind, BOLD, ansi256fg(34));
-          break;
-        case "missing":
-          label = style(kind, BOLD, ansi256fg(196));
-          break;
-        case "stale":
-          label = style(kind, BOLD, ansi256fg(208));
-          break;
-        default:
-          label = style(kind, ansi256fg(244));
+    if (this.isTTY) {
+      if (this.inPlaceLine) {
+        this.out.write("\r" + (this.color ? CLEAR_LINE : ""));
       }
+      this.out.write(line);
+      this.inPlaceLine = true;
+    } else {
+      this.out.write(line + "\n");
     }
-    this.println(`${label} ${source} -> ${output} (${lang})`);
   }
 
-  statusSummary(ok: number, stale: number, missing: number): void {
-    const msg = `summary: ${ok} ok, ${stale} stale, ${missing} missing`;
-    this.println(this.noColor ? msg : style(msg, BOLD));
+  blank(): void {
+    this.finalize();
+    this.out.write("\n");
   }
 
-  cleanRemoved(path: string): void {
-    const label = this.noColor ? "removed" : style("removed", BOLD, ansi256fg(34));
-    this.println(`${label} ${path}`);
-  }
-
-  cleanMissing(path: string): void {
-    const label = this.noColor ? "missing" : style("missing", BOLD, ansi256fg(208));
-    this.println(`${label} ${path}`);
-  }
-
-  cleanSummary(removed: number, missing: number, lockRemoved: number): void {
-    const msg = `cleaned ${removed} files, ${missing} missing, removed ${lockRemoved} lockfiles`;
-    this.println(this.noColor ? msg : style(msg, BOLD));
-  }
-
-  progress(label: string, total: number): ProgressReporter {
+  progress(verb: Verb, total: number): ProgressReporter {
     if (total <= 0) return { increment() {}, done() {} };
-    return new ProgressReporterImpl(this, label, total);
+    return new ProgressReporterImpl(this, verb, total);
   }
 
-  private println(message: string): void {
-    if (!message.trim()) return;
-    this.out.write(message + "\n");
-  }
-
-  private tintProgressLine(line: string, current: number, total: number): string {
-    if (this.noColor || total <= 0 || line.length === 0) return line;
-    current = Math.max(0, Math.min(current, total));
-    let activeLen = Math.round((line.length * current) / total);
-    if (activeLen < 8) activeLen = Math.min(8, line.length);
-    if (activeLen > line.length) activeLen = line.length;
-    const active = style(line.slice(0, activeLen), BOLD, ansi256fg(252));
-    const idle = style(line.slice(activeLen), ansi256fg(240));
-    return active + idle;
+  private finalize(): void {
+    if (this.inPlaceLine) {
+      this.out.write("\n");
+      this.inPlaceLine = false;
+    }
   }
 }
 
 class ProgressReporterImpl implements ProgressReporter {
   private renderer: Renderer;
-  private stage: string;
+  private verb: Verb;
   private total: number;
   private current = 0;
-  private label = "";
 
-  constructor(renderer: Renderer, stage: string, total: number) {
+  constructor(renderer: Renderer, verb: Verb, total: number) {
     this.renderer = renderer;
-    this.stage = stage;
+    this.verb = verb;
     this.total = total;
   }
 
   increment(label: string): void {
-    if (label) this.label = label;
     this.current++;
-    this.renderer.activity(this.stage, this.current, this.total, this.label);
+    this.renderer.step(this.verb, this.current, this.total, label);
   }
 
   done(): void {
     this.current = this.total;
-    this.renderer.activity(this.stage, this.current, this.total, this.label);
   }
-}
-
-function truncate(value: string, max: number): string {
-  if (value.length <= max) return value;
-  if (max <= 3) return value.slice(0, max);
-  return value.slice(0, max - 3) + "...";
-}
-
-function formatActivityLine(stage: string, current: number, total: number, label: string): string {
-  stage = (stage || "Working").trim();
-  label = truncate(label, 80);
-  if (label.trim() && !label.endsWith("...")) {
-    label += " ...";
-  }
-  return `${stage} ${current}/${total} ${label}`;
 }
