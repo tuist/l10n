@@ -14,7 +14,8 @@ mise use github:tuist/l10n
 Or build from source:
 
 ```bash
-go build ./cmd/l10n
+bun install
+bun run build
 ```
 
 ## Quick start 🚀
@@ -160,7 +161,7 @@ Use `--path <dir>` to run commands as if you were in a different directory.
 ## Development 🧪
 
 ```bash
-go test ./...
+bun test
 ```
 
 For the website:
