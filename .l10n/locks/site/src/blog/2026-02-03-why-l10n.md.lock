@@ -1,43 +1,43 @@
 {
   "source_path": "site/src/blog/2026-02-03-why-l10n.md",
-  "source_hash": "e8ae16517d8d5b45a8f8dd2ea98756dd5c579b62b9960c57216b4ad634fe1329",
+  "source_hash": "cf826324affcc131a7ff0c3603c6da2c24f36733863700db3aa66a01a4a0e0b8",
   "outputs": {
     "de": {
-      "path": "site/src/i18n/de/2026-02-03-why-l10n.md",
-      "hash": "f56ecaf3f0fb6b8a6416babca2c92768295cec2fdb82b35497c80e7ee46a349a",
+      "path": "site/src/i18n/de/blog/2026-02-03-why-l10n.md",
+      "hash": "694eaf41ed84055545504bda6cc9d86122d5d8453877eb42f607379f2e7b9be3",
       "context_hash": "b415e6b1ae10c7baeaa156b2ac1e921ff2c8d3ea05d0b69828bf4d8df4925577",
-      "checked_at": "2026-02-03T15:06:04Z"
+      "checked_at": "2026-02-06T11:41:48.619Z"
     },
     "es": {
-      "path": "site/src/i18n/es/2026-02-03-why-l10n.md",
-      "hash": "cd3e46af9830801118e43e2d4e16edbf50ffff9d01af71406fc8a6356aab6741",
+      "path": "site/src/i18n/es/blog/2026-02-03-why-l10n.md",
+      "hash": "8ac5ea6744e1b47d8bba1e78b03e9649830529bc5f329243a867fa4db3ffdcfc",
       "context_hash": "b415e6b1ae10c7baeaa156b2ac1e921ff2c8d3ea05d0b69828bf4d8df4925577",
-      "checked_at": "2026-02-03T15:05:53Z"
+      "checked_at": "2026-02-06T11:41:17.407Z"
     },
     "ja": {
-      "path": "site/src/i18n/ja/2026-02-03-why-l10n.md",
-      "hash": "da17f3238b70a2a01586ca63bb62422c70d381469e06a7a1cb6b46601894baa6",
+      "path": "site/src/i18n/ja/blog/2026-02-03-why-l10n.md",
+      "hash": "b27b22402238203fff812fa6b0bc9b536b4d415a8dcb1d983baff136ff3e1a20",
       "context_hash": "b415e6b1ae10c7baeaa156b2ac1e921ff2c8d3ea05d0b69828bf4d8df4925577",
-      "checked_at": "2026-02-03T15:06:29Z"
+      "checked_at": "2026-02-06T11:43:13.941Z"
     },
     "ko": {
-      "path": "site/src/i18n/ko/2026-02-03-why-l10n.md",
-      "hash": "5c601d6c91b5aace2ebc09bed4e14ead9bb1f7768ef3eb312107255b5855f45b",
+      "path": "site/src/i18n/ko/blog/2026-02-03-why-l10n.md",
+      "hash": "04b824c063da3b5ce98cd884a0a8d27f687e841d302f1b1bf92b2934c4d43aa9",
       "context_hash": "b415e6b1ae10c7baeaa156b2ac1e921ff2c8d3ea05d0b69828bf4d8df4925577",
-      "checked_at": "2026-02-03T15:06:17Z"
+      "checked_at": "2026-02-06T11:42:33.130Z"
     },
     "zh-Hans": {
-      "path": "site/src/i18n/zh-Hans/2026-02-03-why-l10n.md",
-      "hash": "7ecfa367a442566e7a4a1eaa91d2dd9def4d1fdef77dcb120dd7bee525b6c22d",
+      "path": "site/src/i18n/zh-Hans/blog/2026-02-03-why-l10n.md",
+      "hash": "f7403b9f758d58cedd74f54f602c4218206753e4c629709d24d5f7b6c1d5703c",
       "context_hash": "b415e6b1ae10c7baeaa156b2ac1e921ff2c8d3ea05d0b69828bf4d8df4925577",
-      "checked_at": "2026-02-03T15:06:41Z"
+      "checked_at": "2026-02-06T11:43:43.006Z"
     },
     "zh-Hant": {
-      "path": "site/src/i18n/zh-Hant/2026-02-03-why-l10n.md",
-      "hash": "178857cf0ef797f75007f7d95fd8a94198426f78678950794a8b8a3701bb8c8c",
+      "path": "site/src/i18n/zh-Hant/blog/2026-02-03-why-l10n.md",
+      "hash": "8e14a12511e5a224e5bf37cea89f5e15ccffa3047ab25920d8b80916c083b73a",
       "context_hash": "b415e6b1ae10c7baeaa156b2ac1e921ff2c8d3ea05d0b69828bf4d8df4925577",
-      "checked_at": "2026-02-03T15:06:53Z"
+      "checked_at": "2026-02-06T11:44:14.758Z"
     }
   },
-  "updated_at": "2026-02-03T15:06:53Z"
+  "updated_at": "2026-02-06T11:44:14.758Z"
 }

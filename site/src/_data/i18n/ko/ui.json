@@ -1,9 +1,11 @@
 {
   "nav": {
     "how": "작동 방식",
+    "tools": "도구",
     "config": "설정",
     "features": "기능",
-    "updates": "업데이트"
+    "updates": "업데이트",
+    "blog": "블로그"
   },
   "footer": {
     "blurb_prefix": "MIT 라이선스. ",

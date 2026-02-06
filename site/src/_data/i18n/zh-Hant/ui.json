@@ -1,9 +1,11 @@
 {
   "nav": {
-    "how": "運作方式",
+    "how": "運作原理",
+    "tools": "工具",
     "config": "設定",
     "features": "功能",
-    "updates": "更新"
+    "updates": "更新",
+    "blog": "部落格"
   },
   "footer": {
     "blurb_prefix": "MIT 授權。由 ",

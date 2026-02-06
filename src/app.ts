@@ -99,7 +99,7 @@ export async function translateCmd(root: string, opts: TranslateOptions): Promis
   }
 
   if (total === 0) {
-    reporter.info("no translations needed");
+    reporter.log("Info", "no translations needed");
     return;
   }
 
@@ -111,10 +111,10 @@ export async function translateCmd(root: string, opts: TranslateOptions): Promis
 
       const label = `${planItem.source.sourcePath} -> ${output.outputPath} (${output.lang})`;
       const step = current + 1;
-      reporter.activity("Translating", step, total, label);
+      reporter.step("Translating", step, total, label);
 
       if (opts.dryRun) {
-        reporter.info("dry-run " + label);
+        reporter.log("Dry run", label);
         current = step;
         continue;
       }
@@ -245,12 +245,13 @@ export async function statusCmd(root: string, opts: StatusOptions): Promise<void
 
     for (const output of source.outputs) {
       const outputAbs = join(root, output.outputPath);
+      const label = `${source.sourcePath} -> ${output.outputPath} (${output.lang})`;
       try {
         await stat(outputAbs);
       } catch (err: any) {
         if (err.code === "ENOENT") {
           missing++;
-          reporter.status("missing", source.sourcePath, output.outputPath, output.lang);
+          reporter.log("Missing", label);
           continue;
         }
         throw err;
@@ -259,32 +260,32 @@ export async function statusCmd(root: string, opts: StatusOptions): Promise<void
       const contextHash = hashStrings(contextPartsFor(source, output.lang));
       if (!lock || lock.source_hash !== sourceHash) {
         stale++;
-        reporter.status("stale", source.sourcePath, output.outputPath, output.lang);
+        reporter.log("Stale", label);
         continue;
       }
       const outputLock = lock.outputs[output.lang];
       if (!outputLock) {
         stale++;
-        reporter.status("stale", source.sourcePath, output.outputPath, output.lang);
+        reporter.log("Stale", label);
         continue;
       }
       const lockedCtxHash = lockContextHash(lock, output.lang);
       if (lockedCtxHash !== contextHash) {
         stale++;
-        reporter.status("stale", source.sourcePath, output.outputPath, output.lang);
+        reporter.log("Stale", label);
         continue;
       }
       if (outputLock.path !== output.outputPath) {
         stale++;
-        reporter.status("stale", source.sourcePath, output.outputPath, output.lang);
+        reporter.log("Stale", label);
         continue;
       }
       upToDate++;
-      reporter.status("ok", source.sourcePath, output.outputPath, output.lang);
+      reporter.log("Ok", label);
     }
   }
 
-  reporter.statusSummary(upToDate, stale, missing);
+  reporter.log("Summary", `${upToDate} ok, ${stale} stale, ${missing} missing`);
   if (stale > 0 || missing > 0) {
     throw new Error("translations out of date");
   }
@@ -320,20 +321,20 @@ export async function cleanCmd(root: string, opts: CleanOptions): Promise<void> 
       const result = await removePath(abs, opts.dryRun);
       if (result === "removed") {
         removed++;
-        reporter.cleanRemoved(output.outputPath);
+        reporter.log("Removed", output.outputPath);
       } else if (result === "missing") {
         missingCount++;
-        reporter.cleanMissing(output.outputPath);
+        reporter.log("Skipped", output.outputPath + " (not found)");
       }
     }
     const lp = lockPath(root, source.sourcePath);
     const result = await removePath(lp, opts.dryRun);
     if (result === "removed") {
       lockRemoved++;
-      reporter.cleanRemoved(lp);
+      reporter.log("Removed", lp);
     } else if (result === "missing") {
       missingCount++;
-      reporter.cleanMissing(lp);
+      reporter.log("Skipped", lp + " (not found)");
     }
   }
 
@@ -360,24 +361,27 @@ export async function cleanCmd(root: string, opts: CleanOptions): Promise<void> 
         const result = await removePath(abs, opts.dryRun);
         if (result === "removed") {
           removed++;
-          reporter.cleanRemoved(output.path);
+          reporter.log("Removed", output.path);
         } else if (result === "missing") {
           missingCount++;
-          reporter.cleanMissing(output.path);
+          reporter.log("Skipped", output.path + " (not found)");
         }
       }
       const result = await removePath(path, opts.dryRun);
       if (result === "removed") {
         lockRemoved++;
-        reporter.cleanRemoved(path);
+        reporter.log("Removed", path);
       } else if (result === "missing") {
         missingCount++;
-        reporter.cleanMissing(path);
+        reporter.log("Skipped", path + " (not found)");
       }
     });
   }
 
-  reporter.cleanSummary(removed, missingCount, lockRemoved);
+  reporter.log(
+    "Cleaned",
+    `${removed} files removed, ${missingCount} not found, ${lockRemoved} lockfiles removed`,
+  );
 }
 
 // ── Init ───────────────────────────────────────────────────────────────
@@ -421,23 +425,23 @@ export async function initCmd(root: string, opts: InitOptions): Promise<void> {
 
   const content = renderL10NTemplate(sourceLang, targets, locales);
   await writeFile(l10nPath, content);
-  reporter.info("created L10N.md");
+  reporter.log("Created", "L10N.md");
 
   const gitignorePath = join(rootAbs, ".gitignore");
   if (await ensureLine(gitignorePath, "/.l10n/tmp")) {
-    reporter.info("updated .gitignore");
+    reporter.log("Updated", ".gitignore");
   }
 
   const attributesPath = join(rootAbs, ".gitattributes");
   if (await ensureLine(attributesPath, ".l10n/locks/** linguist-generated=true")) {
-    reporter.info("updated .gitattributes");
+    reporter.log("Updated", ".gitattributes");
   }
 
-  reporter.info("next steps:");
-  reporter.info("1. Open L10N.md and uncomment the example config.");
-  reporter.info("2. Update source globs, targets, and output paths for your repo.");
-  reporter.info("3. Set OPENAI_API_KEY (or change the provider/model settings).");
-  reporter.info("4. Run `l10n translate` to generate drafts.");
+  reporter.log("Info", "Next steps:");
+  reporter.log("Info", "  1. Open L10N.md and uncomment the example config.");
+  reporter.log("Info", "  2. Update source globs, targets, and output paths for your repo.");
+  reporter.log("Info", "  3. Set OPENAI_API_KEY (or change the provider/model settings).");
+  reporter.log("Info", "  4. Run `l10n translate` to generate drafts.");
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────

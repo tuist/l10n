@@ -1,14 +1,16 @@
 {
   "nav": {
     "how": "仕組み",
+    "tools": "ツール",
     "config": "設定",
     "features": "機能",
-    "updates": "更新情報"
+    "updates": "アップデート",
+    "blog": "ブログ"
   },
   "footer": {
     "blurb_prefix": "MITライセンス。",
     "blurb_link_label": "Tuist",
     "blurb_suffix": "が開発。素早くリリースするチームのために。",
-    "cta_title": "はじめる"
+    "cta_title": "始める"
   }
 }
