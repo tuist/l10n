@@ -37,23 +37,10 @@ jobs:
             echo "stale=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Authenticate to GCP
-        if: steps.status.outputs.stale == 'true'
-        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
-        with:
-          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-
-      - name: Get Vertex AI access token
-        if: steps.status.outputs.stale == 'true'
-        id: token
-        run: echo "token=$(gcloud auth print-access-token)" >> "$GITHUB_OUTPUT"
-
       - name: Run translations
         if: steps.status.outputs.stale == 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          VERTEX_AI_TOKEN: ${{ steps.token.outputs.token }}
-          VERTEX_AI_ENDPOINT: ${{ secrets.VERTEX_AI_ENDPOINT }}
         run: bun run src/cli.ts translate
 
       - name: Create PR with translations
