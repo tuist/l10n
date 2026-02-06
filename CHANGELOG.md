@@ -1,6 +1,11 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.13.2] - 2026-02-06
+
+### Documentation
+- docs: update README to use Bun instead of npm
+
 ## [v0.13.1] - 2026-02-06
 
 ### Other
