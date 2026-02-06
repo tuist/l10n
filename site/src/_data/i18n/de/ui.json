@@ -1,14 +1,16 @@
 {
   "nav": {
     "how": "So funktioniert's",
+    "tools": "Tools",
     "config": "Konfiguration",
     "features": "Features",
-    "updates": "Updates"
+    "updates": "Updates",
+    "blog": "Blog"
   },
   "footer": {
     "blurb_prefix": "MIT-lizenziert. Entwickelt von ",
     "blurb_link_label": "Tuist",
     "blurb_suffix": " für Teams, die schnell ausliefern.",
-    "cta_title": "Jetzt starten"
+    "cta_title": "Loslegen"
   }
 }

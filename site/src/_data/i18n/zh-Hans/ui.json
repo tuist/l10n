@@ -1,14 +1,16 @@
 {
   "nav": {
     "how": "工作原理",
+    "tools": "工具",
     "config": "配置",
-    "features": "功能特性",
-    "updates": "更新日志"
+    "features": "功能",
+    "updates": "更新",
+    "blog": "博客"
   },
   "footer": {
-    "blurb_prefix": "MIT 开源协议。由 ",
+    "blurb_prefix": "MIT 许可证。由 ",
     "blurb_link_label": "Tuist",
-    "blurb_suffix": " 为快速迭代的团队打造。",
-    "cta_title": "快速上手"
+    "blurb_suffix": " 为快速交付的团队打造。",
+    "cta_title": "开始使用"
   }
 }

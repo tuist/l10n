@@ -4,10 +4,10 @@
     "description": "Mantén la localización en tu repositorio, valida con tus herramientas y despliega más rápido con borradores generados por LLM."
   },
   "hero": {
-    "badge": "Herramienta CLI open source",
+    "badge": "Herramienta CLI de código abierto",
     "title": "Localización agéntica para tu código",
-    "lead": "l10n traduce tu contenido con LLMs, mantiene todo en el repositorio, valida la salida localmente y genera borradores que tu equipo puede revisar sin el ida y vuelta de plataformas externas.",
-    "cta_primary": "Comenzar",
+    "lead": "l10n traduce tu contenido con LLMs, mantiene todo en el repositorio, valida la salida localmente y genera borradores que tu equipo puede revisar sin el ir y venir de plataformas externas.",
+    "cta_primary": "Empezar",
     "cta_secondary": "Cómo funciona"
   },
   "origin": {
@@ -17,7 +17,7 @@
       "crowdin": "Crowdin",
       "middle": " y ",
       "weblate": "Weblate",
-      "suffix": ". La indirección de exportar e importar contenido nos ralentizaba, y no podíamos ejecutar nuestra propia validación en el proceso. Queríamos el mismo flujo de trabajo que usamos para el código: cambiar, probar, revisar, desplegar."
+      "suffix": ". La indirección de exportar e importar contenido nos ralentizaba, y no podíamos ejecutar nuestra propia validación en el flujo. Queríamos el mismo flujo de trabajo que usamos para el código: cambiar, probar, revisar, desplegar."
     },
     "note": "Ahora las traducciones se generan en su lugar, se verifican con tus herramientas y las revisan humanos solo cuando importa."
   },
@@ -27,7 +27,7 @@
       {
         "number": "01",
         "title": "Da contexto a los agentes",
-        "text": "Añade archivos de contexto L10N.md junto a tu contenido. l10n rastrea su dependencia, así que cuando el contexto o el contenido cambia, solo se regeneran las traducciones afectadas."
+        "text": "Añade archivos de contexto L10N.md junto a tu contenido. l10n rastrea sus dependencias, así que cuando el contexto o el contenido cambia, solo se regeneran las traducciones afectadas."
       },
       {
         "number": "02",
@@ -37,9 +37,45 @@
       {
         "number": "03",
         "title": "Los agentes validan su propio trabajo",
-        "text": "Los agentes tienen acceso a verificaciones de sintaxis integradas y comandos personalizados que defines. Ejecutan la validación después de cada traducción y reintentan si hay errores, así que la salida es correcta antes de que la revises."
+        "text": "Los agentes tienen acceso a verificaciones de sintaxis integradas y comandos personalizados que tú defines. Ejecutan la validación después de cada traducción y reintentan en caso de errores, así la salida es correcta antes de que la revises."
       }
     ]
+  },
+  "tools": {
+    "title": "Herramientas",
+    "intro": "Los agentes usan herramientas para automatizar la verificación después de cada traducción.",
+    "categories": [
+      {
+        "title": "Validadores de sintaxis",
+        "text": "Analizan la salida para asegurar que sea válida antes de guardarla.",
+        "items": [
+          "JSON",
+          "YAML",
+          "PO",
+          "Markdown frontmatter"
+        ]
+      },
+      {
+        "title": "Verificaciones de preservación",
+        "text": "Garantizan que los tokens críticos sobrevivan a la traducción.",
+        "items": [
+          "Bloques de código",
+          "Código en línea",
+          "URLs",
+          "Placeholders"
+        ]
+      },
+      {
+        "title": "Comandos personalizados",
+        "text": "Trae tus propios validadores con check_cmd y check_cmds.",
+        "items": [
+          "Linters",
+          "Compiladores",
+          "Validadores de esquemas"
+        ]
+      }
+    ],
+    "note": "Los fallos de herramientas activan reintentos hasta que la salida sea válida."
   },
   "config": {
     "title": "La configuración vive en tu repositorio",
@@ -49,39 +85,43 @@
     },
     "cli": {
       "title": "Comandos CLI",
-      "text": "Traduce, valida y rastrea qué necesita actualizarse.",
+      "text": "Traduce, valida y rastrea lo que necesita actualizarse.",
       "items": [
         {
+          "cmd": "l10n init",
+          "desc": "Configuración interactiva del proyecto"
+        },
+        {
           "cmd": "l10n translate",
-          "desc": "Generar traducciones"
+          "desc": "Genera traducciones"
         },
         {
           "cmd": "l10n status",
-          "desc": "Reportar salidas faltantes o desactualizadas"
+          "desc": "Reporta salidas faltantes o desactualizadas"
         },
         {
           "cmd": "l10n check",
-          "desc": "Validar sintaxis de salida"
+          "desc": "Valida la sintaxis de la salida"
         },
         {
           "cmd": "l10n clean",
-          "desc": "Eliminar salidas de traducción obsoletas"
+          "desc": "Elimina salidas de traducción obsoletas"
         }
       ],
       "note_prefix": "Usa",
-      "note_suffix": "para re-traducir todo."
+      "note_suffix": "para retraducir todo."
     }
   },
   "features": {
     "title": "Diseñado para flujos de trabajo reales",
     "items": [
       {
-        "title": "Hashing sensible al contexto",
-        "text": "Las traducciones se actualizan cuando cambia el contenido fuente o el contexto L10N.md ancestro."
+        "title": "Hashing consciente del contexto",
+        "text": "Las traducciones se actualizan cuando el contenido fuente o el contexto L10N.md ancestro cambia."
       },
       {
         "title": "Hooks de validación",
-        "text": "Verificaciones de sintaxis JSON, YAML y PO, más comandos externos de lint opcionales."
+        "text": "Verificaciones de sintaxis JSON, YAML y PO más comandos de lint externos opcionales."
       },
       {
         "title": "Pipeline de agentes",
@@ -95,8 +135,8 @@
   },
   "refinement": {
     "title": "Refinamiento progresivo",
-    "lead": "Las traducciones no tienen que ser perfectas desde el primer día. Como el código, mejoran con la iteración.",
-    "text": "Los primeros borradores de los LLMs son estructuralmente correctos pero pueden fallar en matices, tono o terminología específica del dominio. Eso es parte del diseño. Cada ciclo de revisión — un comentario en un pull request, un archivo de contexto actualizado, un ajuste en el glosario — retroalimenta la siguiente ejecución de traducción. La calidad converge en pasadas sucesivas, no de un solo intento.",
+    "lead": "Las traducciones no tienen que ser perfectas el primer día. Como el código, mejoran con la iteración.",
+    "text": "Los primeros borradores de LLMs son estructuralmente correctos pero pueden perder matices, tono o frases específicas del dominio. Eso es por diseño. Cada ciclo de revisión — un comentario en un pull request, un archivo de contexto actualizado, un ajuste en el glosario — retroalimenta la siguiente ejecución de traducción. La calidad converge a través de pasadas sucesivas, no en una sola.",
     "steps": [
       {
         "label": "Borrador",
@@ -108,21 +148,21 @@
       },
       {
         "label": "Refinar",
-        "text": "El contexto actualizado y las correcciones de glosario alimentan la siguiente ejecución, cerrando la brecha."
+        "text": "El contexto actualizado y las correcciones del glosario alimentan la siguiente ejecución, cerrando la brecha."
       },
       {
         "label": "Converger",
-        "text": "Cada ciclo reduce la distancia a la calidad de producción. El sistema aprende la voz de tu producto."
+        "text": "Cada ciclo reduce la distancia hacia la calidad de producción. El sistema aprende la voz de tu producto."
       }
     ],
-    "prior_art": "Esto sigue el mismo principio detrás del Kaizen en manufactura, la post-edición en traducción profesional (PEMT) y la aproximación sucesiva en ingeniería: comenzar con una base suficientemente buena y mejorarla sistemáticamente con el criterio humano en el ciclo."
+    "prior_art": "Esto sigue el mismo principio detrás de Kaizen en manufactura, post-edición en traducción profesional (PEMT) y aproximación sucesiva en ingeniería: empieza con una base suficientemente buena y mejórala sistemáticamente con juicio humano en el proceso."
   },
   "faq": {
-    "title": "FAQ",
+    "title": "Preguntas frecuentes",
     "items": [
       {
-        "q": "¿En qué se diferencia esto de las herramientas de traducción tradicionales?",
-        "a": "Las herramientas tradicionales dependen de memorias de traducción, bases de datos estáticas de traducciones pasadas que se emparejan por similitud. l10n reemplaza eso con contexto LLM como memoria: archivos de contexto que los agentes leen, de los que aprenden, y que tu equipo puede iterar con el tiempo. En lugar de buscar una coincidencia aproximada, los agentes entienden el tono, la terminología y las convenciones de tu producto. Y así como los desarrolladores validan cambios de código compilando o ejecutando linters, los agentes validan sus traducciones usando las mismas herramientas en tu entorno. Ejecútalo en CI o localmente, y los agentes usarán tus linters, compiladores y validadores para corregir su propia salida."
+        "q": "¿En qué se diferencia de las herramientas de traducción tradicionales?",
+        "a": "Las herramientas tradicionales dependen de memorias de traducción, bases de datos estáticas de traducciones pasadas que se emparejan por similitud. l10n reemplaza eso con contexto LLM como memoria: archivos de contexto que los agentes leen, de los que aprenden, y que tu equipo puede iterar con el tiempo. En lugar de buscar una coincidencia aproximada, los agentes entienden el tono, la terminología y las convenciones de tu producto. Y tal como los desarrolladores validan cambios de código compilando o ejecutando linters, los agentes validan sus traducciones usando las mismas herramientas en tu entorno. Ejecútalo en CI o localmente, y los agentes usarán tus linters, compiladores y validadores para corregir su propia salida."
       },
       {
         "q": "¿Necesito traer mis propios modelos?",
@@ -130,7 +170,7 @@
       },
       {
         "q": "¿Cómo revisan los humanos las traducciones?",
-        "a": "Hoy, los revisores verifican el contenido traducido a través de pull requests y diffs, y pueden actualizar los archivos de contexto para forzar una re-traducción cuando sea necesario. En el futuro, esperamos que se conviertan en parte del proceso ejecutando l10n localmente, de la misma manera que los desarrolladores ya trabajan con agentes de código como Codex."
+        "a": "Hoy, los revisores verifican el contenido traducido a través de pull requests y diffs, y pueden actualizar archivos de contexto para forzar la retraducción cuando sea necesario. En el futuro, esperamos que se conviertan en parte del proceso ejecutando l10n localmente, de la misma manera que los desarrolladores ya trabajan con agentes de código como Codex."
       }
     ]
   },

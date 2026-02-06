@@ -1,14 +1,14 @@
 {
   "meta": {
     "title": "l10n · Lokalisieren wie Sie Software ausliefern",
-    "description": "Lokalisierung im Repository behalten, mit Ihren Tools validieren und schneller ausliefern mit LLM-Entwürfen."
+    "description": "Lokalisierung im Repository behalten, mit Ihren Tools validieren und mit LLM-Entwürfen schneller ausliefern."
   },
   "hero": {
     "badge": "Open-Source-CLI-Tool",
-    "title": "Agentische Lokalisierung für Ihre Codebase",
-    "lead": "l10n übersetzt Ihre Inhalte mit LLMs, behält alles im Repository, validiert Ausgaben lokal und generiert Entwürfe, die Ihr Team prüfen kann – ohne den Umweg über externe Plattformen.",
-    "cta_primary": "Loslegen",
-    "cta_secondary": "So funktioniert's"
+    "title": "Agentenbasierte Lokalisierung für Ihre Codebase",
+    "lead": "l10n übersetzt Ihre Inhalte mit LLMs, behält alles im Repository, validiert Ausgaben lokal und generiert Entwürfe, die Ihr Team prüfen kann — ohne den Umweg über externe Plattformen.",
+    "cta_primary": "Erste Schritte",
+    "cta_secondary": "So funktioniert es"
   },
   "origin": {
     "title": "Warum Tuist das entwickelt hat",
@@ -17,12 +17,12 @@
       "crowdin": "Crowdin",
       "middle": " und ",
       "weblate": "Weblate",
-      "suffix": " ausprobiert. Der Umweg über Export und Import von Inhalten hat uns ausgebremst, und wir konnten unsere eigene Validierung nicht in den Prozess einbinden. Wir wollten denselben Workflow wie für Code: ändern, testen, prüfen, ausliefern."
+      "suffix": " ausprobiert. Der Umweg über Export und Import verlangsamte uns, und wir konnten unsere eigene Validierung nicht einbinden. Wir wollten den gleichen Workflow wie für Code: ändern, testen, prüfen, ausliefern."
     },
-    "note": "Jetzt werden Übersetzungen direkt generiert, von Ihren Tools geprüft und nur bei Bedarf von Menschen reviewt."
+    "note": "Jetzt werden Übersetzungen direkt generiert, von Ihren Tools geprüft und nur bei Bedarf von Menschen überprüft."
   },
   "how": {
-    "title": "So funktioniert's",
+    "title": "So funktioniert es",
     "steps": [
       {
         "number": "01",
@@ -32,20 +32,56 @@
       {
         "number": "02",
         "title": "Modelle auswählen",
-        "text": "Wählen Sie ein Modell zur Koordination der agentischen Session und ein weiteres für präzise Übersetzungen. Nutzen Sie jeden OpenAI-kompatiblen Endpoint, Vertex AI oder Ihr eigenes gehostetes Modell."
+        "text": "Wählen Sie ein Modell zur Koordination der Agenten-Session und ein weiteres für präzise Übersetzungen. Verwenden Sie beliebige OpenAI-kompatible Endpunkte, Vertex AI oder Ihr eigenes gehostetes Modell."
       },
       {
         "number": "03",
         "title": "Agenten validieren ihre eigene Arbeit",
-        "text": "Agenten haben Zugriff auf integrierte Syntaxprüfungen und benutzerdefinierte Befehle. Sie führen nach jeder Übersetzung eine Validierung durch und wiederholen bei Fehlern – so ist die Ausgabe korrekt, bevor Sie sie prüfen."
+        "text": "Agenten haben Zugriff auf integrierte Syntaxprüfungen und benutzerdefinierte Befehle. Sie führen die Validierung nach jeder Übersetzung aus und wiederholen bei Fehlern, sodass die Ausgabe korrekt ist, bevor Sie prüfen."
       }
     ]
   },
+  "tools": {
+    "title": "Tools",
+    "intro": "Agenten nutzen Tools zur automatischen Verifikation nach jeder Übersetzung.",
+    "categories": [
+      {
+        "title": "Syntax-Validatoren",
+        "text": "Ausgaben parsen, um Gültigkeit vor dem Speichern sicherzustellen.",
+        "items": [
+          "JSON",
+          "YAML",
+          "PO",
+          "Markdown-Frontmatter"
+        ]
+      },
+      {
+        "title": "Preserve-Checks",
+        "text": "Garantieren, dass kritische Tokens die Übersetzung überstehen.",
+        "items": [
+          "Code-Blöcke",
+          "Inline-Code",
+          "URLs",
+          "Platzhalter"
+        ]
+      },
+      {
+        "title": "Benutzerdefinierte Befehle",
+        "text": "Eigene Validatoren mit check_cmd und check_cmds einbinden.",
+        "items": [
+          "Linter",
+          "Compiler",
+          "Schema-Validatoren"
+        ]
+      }
+    ],
+    "note": "Tool-Fehler lösen Wiederholungen aus, bis die Ausgabe gültig ist."
+  },
   "config": {
-    "title": "Konfiguration lebt in Ihrem Repository",
+    "title": "Konfiguration liegt in Ihrem Repository",
     "l10n": {
       "title": "L10N.md",
-      "text": "Definieren Sie Übersetzungsquellen, Zielsprachen und Ausgabemuster im TOML-Frontmatter."
+      "text": "Übersetzungsquellen, Zielsprachen und Ausgabemuster in TOML-Frontmatter definieren."
     },
     "cli": {
       "title": "CLI-Befehle",
@@ -77,7 +113,7 @@
     }
   },
   "features": {
-    "title": "Für echte Workflows gebaut",
+    "title": "Für echte Workflows entwickelt",
     "items": [
       {
         "title": "Kontextbewusstes Hashing",
@@ -89,10 +125,10 @@
       },
       {
         "title": "Agenten-Pipeline",
-        "text": "Separate Koordinator- und Übersetzermodelle mit Wiederholung bei Validierungsfehlern."
+        "text": "Separate Koordinator- und Übersetzer-Modelle mit Wiederholung bei Validierungsfehlern."
       },
       {
-        "title": "Bereit für menschliches Review",
+        "title": "Bereit für menschliche Prüfung",
         "text": "Entwürfe schnell generieren, bei Bedarf prüfen und alles in Git behalten."
       }
     ]
@@ -100,41 +136,41 @@
   "refinement": {
     "title": "Progressive Verfeinerung",
     "lead": "Übersetzungen müssen nicht am ersten Tag perfekt sein. Wie Code verbessern sie sich durch Iteration.",
-    "text": "Erste Entwürfe von LLMs sind strukturell korrekt, können aber Nuancen, Tonalität oder domänenspezifische Formulierungen verfehlen. Das ist beabsichtigt. Jeder Review-Zyklus — ein Kommentar im Pull Request, eine aktualisierte Kontextdatei, eine Glossar-Korrektur — fließt in den nächsten Übersetzungslauf ein. Qualität konvergiert über aufeinanderfolgende Durchläufe, nicht in einem einzigen Anlauf.",
+    "text": "Erste Entwürfe von LLMs sind strukturell korrekt, können aber Nuancen, Ton oder domänenspezifische Formulierungen verfehlen. Das ist beabsichtigt. Jeder Review-Zyklus — ein Pull-Request-Kommentar, eine aktualisierte Kontextdatei, eine Glossar-Korrektur — fließt in den nächsten Übersetzungslauf ein. Qualität konvergiert über mehrere Durchläufe, nicht in einem einzigen Schritt.",
     "steps": [
       {
         "label": "Entwurf",
-        "text": "Das LLM generiert einen strukturell validen ersten Durchlauf basierend auf Ihren Kontextdateien."
+        "text": "LLM generiert einen strukturell gültigen ersten Durchlauf basierend auf Ihren Kontextdateien."
       },
       {
         "label": "Review",
-        "text": "Ihr Team markiert Probleme über Pull Requests, genau wie beim Code-Review."
+        "text": "Ihr Team markiert Probleme über Pull Requests, genau wie bei Code-Reviews."
       },
       {
         "label": "Verfeinern",
-        "text": "Aktualisierter Kontext und Glossar-Korrekturen fließen in den nächsten Lauf ein und schließen die Lücke."
+        "text": "Aktualisierter Kontext und Glossar-Korrekturen fließen in den nächsten Durchlauf ein und schließen die Lücke."
       },
       {
         "label": "Konvergieren",
         "text": "Jeder Zyklus verringert den Abstand zur Produktionsqualität. Das System lernt die Stimme Ihres Produkts."
       }
     ],
-    "prior_art": "Dies folgt dem gleichen Prinzip wie Kaizen in der Fertigung, Post-Editing in der professionellen Übersetzung (PEMT) und sukzessive Approximation in der Technik: mit einer ausreichend guten Basis starten und sie systematisch mit menschlichem Urteil im Prozess verbessern."
+    "prior_art": "Dies folgt dem gleichen Prinzip wie Kaizen in der Fertigung, Post-Editing in der professionellen Übersetzung (PEMT) und sukzessive Approximation im Ingenieurwesen: mit einer ausreichend guten Basis starten und systematisch mit menschlichem Urteil verbessern."
   },
   "faq": {
     "title": "FAQ",
     "items": [
       {
         "q": "Wie unterscheidet sich das von traditionellen Übersetzungstools?",
-        "a": "Traditionelle Tools setzen auf Translation Memories – statische Datenbanken vergangener Übersetzungen, die per Ähnlichkeit abgeglichen werden. l10n ersetzt das durch LLM-Kontext als Gedächtnis: Kontextdateien, die Agenten lesen, aus denen sie lernen und die Ihr Team iterativ verbessern kann. Statt eines unscharfen Treffers verstehen Agenten den Ton, die Terminologie und die Konventionen Ihres Produkts. Und genau wie Entwickler Code-Änderungen durch Kompilieren oder Linting validieren, validieren Agenten ihre Übersetzungen mit denselben Tools in Ihrer Umgebung. Führen Sie es in CI oder lokal aus – Agenten nutzen Ihre Linter, Compiler und Validatoren, um ihre eigene Ausgabe zu korrigieren."
+        "a": "Traditionelle Tools basieren auf Translation Memories, statischen Datenbanken vergangener Übersetzungen, die nach Ähnlichkeit abgeglichen werden. l10n ersetzt das durch LLM-Kontext als Gedächtnis: Kontextdateien, die Agenten lesen, aus denen sie lernen und die Ihr Team über die Zeit iterieren kann. Statt eines Fuzzy-Match verstehen Agenten Ton, Terminologie und Konventionen Ihres Produkts. Und genau wie Entwickler Code-Änderungen durch Kompilieren oder Linten validieren, validieren Agenten ihre Übersetzungen mit denselben Tools in Ihrer Umgebung. Führen Sie es in CI oder lokal aus, und Agenten nutzen Ihre Linter, Compiler und Validatoren, um ihre eigene Ausgabe zu korrigieren."
       },
       {
         "q": "Muss ich eigene Modelle mitbringen?",
-        "a": "Ja. l10n ist ein CLI-Tool, kein gehosteter Service. Sie verweisen es auf jeden OpenAI-kompatiblen Endpoint, Vertex AI oder Ihr eigenes Modell. Sie kontrollieren die Kosten, die Daten und die Qualität."
+        "a": "Ja. l10n ist ein CLI-Tool, kein gehosteter Dienst. Sie verweisen es auf einen beliebigen OpenAI-kompatiblen Endpunkt, Vertex AI oder Ihr eigenes Modell. Sie kontrollieren Kosten, Daten und Qualität."
       },
       {
         "q": "Wie prüfen Menschen Übersetzungen?",
-        "a": "Aktuell prüfen Reviewer übersetzte Inhalte über Pull Requests und Diffs und können Kontextdateien aktualisieren, um bei Bedarf eine Neuübersetzung zu erzwingen. Künftig erwarten wir, dass sie Teil des Prozesses werden, indem sie l10n lokal ausführen – so wie Entwickler bereits mit Coding-Agenten wie Codex arbeiten."
+        "a": "Derzeit prüfen Reviewer übersetzten Inhalt über Pull Requests und Diffs und können Kontextdateien aktualisieren, um bei Bedarf eine Neuübersetzung zu erzwingen. In Zukunft erwarten wir, dass sie Teil des Loops werden, indem sie l10n lokal ausführen — so wie Entwickler bereits mit Coding-Agenten wie Codex arbeiten."
       }
     ]
   },
