@@ -17,26 +17,29 @@ jobs:
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
-      - uses: oven-sh/setup-bun@v2
+      - name: Set up mise
+        uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac # v2
         with:
-          bun-version: latest
+          cache: true
+
+      - name: Install tools
+        run: mise install
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
       - name: Check translation status
         id: status
-        continue-on-error: true
         run: |
-          if bun run src/cli.ts status 2>&1 | grep -q "stale\|missing"; then
-            echo "stale=true" >> "$GITHUB_OUTPUT"
-          else
+          if bun run src/cli.ts status; then
             echo "stale=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "stale=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Authenticate to GCP
         if: steps.status.outputs.stale == 'true'
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
         with:
           credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
@@ -50,6 +53,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           VERTEX_AI_TOKEN: ${{ steps.token.outputs.token }}
+          VERTEX_AI_ENDPOINT: ${{ secrets.VERTEX_AI_ENDPOINT }}
         run: bun run src/cli.ts translate
 
       - name: Create PR with translations

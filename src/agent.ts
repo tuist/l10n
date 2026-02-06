@@ -128,6 +128,7 @@ function defaultBrief(req: TranslationRequest): string {
   return lines.join("\n");
 }
 
+// TranslateGemma uses ISO 639-1 codes; map l10n's BCP 47 variants to what the model expects.
 const LANG_CODE_MAP: Record<string, string> = {
   "zh-Hans": "zh",
   "zh-Hant": "zh",
