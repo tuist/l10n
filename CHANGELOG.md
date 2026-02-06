@@ -1,6 +1,11 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.13.3] - 2026-02-06
+
+### Documentation
+- docs: replace Go commands with Bun in README
+
 ## [v0.13.2] - 2026-02-06
 
 ### Documentation
