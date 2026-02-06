@@ -173,4 +173,36 @@ describe("resolveAgents", () => {
     expect(translator.base_url).toBe("https://api.anthropic.com");
     expect(translator.provider).toBe("anthropic");
   });
+
+  test("mixed providers: anthropic coordinator + vertex translator", () => {
+    const { coordinator, translator } = resolveAgents({
+      provider: "anthropic",
+      api_key: "sk-ant-test",
+      max_tokens: 4096,
+      agent: [
+        { role: "coordinator", model: "claude-sonnet-4-20250514" },
+        {
+          role: "translator",
+          provider: "vertex",
+          model: "translategemma",
+          base_url:
+            "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/my-project/locations/us-central1/endpoints/12345",
+          chat_completions_path: "/chat/completions",
+          api_key: "gcp-token",
+        },
+      ],
+    });
+    expect(coordinator.provider).toBe("anthropic");
+    expect(coordinator.model).toBe("claude-sonnet-4-20250514");
+    expect(coordinator.base_url).toBe("https://api.anthropic.com");
+    expect(coordinator.api_key).toBe("sk-ant-test");
+
+    expect(translator.provider).toBe("vertex");
+    expect(translator.model).toBe("translategemma");
+    expect(translator.base_url).toBe(
+      "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/my-project/locations/us-central1/endpoints/12345",
+    );
+    expect(translator.api_key).toBe("gcp-token");
+    expect(translator.chat_completions_path).toBe("/chat/completions");
+  });
 });

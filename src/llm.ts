@@ -1,8 +1,15 @@
 import type { AgentConfig } from "./config.js";
 
+export interface TranslateGemmaContentPart {
+  type: string;
+  source_lang_code: string;
+  target_lang_code: string;
+  text: string;
+}
+
 export interface ChatMessage {
   role: string;
-  content: string;
+  content: string | TranslateGemmaContentPart[];
 }
 
 interface ChatRequest {
@@ -174,7 +181,15 @@ async function chatOpenAI(
     if (!parsed.choices || parsed.choices.length === 0) {
       throw new Error("llm response missing choices");
     }
-    return parsed.choices[0].message.content;
+    const raw = parsed.choices[0].message.content;
+    if (typeof raw === "string") return raw;
+    if (Array.isArray(raw)) {
+      return raw
+        .filter((p: any) => typeof p.text === "string")
+        .map((p: any) => p.text)
+        .join("");
+    }
+    return String(raw);
   } finally {
     clearTimeout(timer);
   }
@@ -198,13 +213,19 @@ async function chatAnthropic(
   const anthMessages: AnthropicMessage[] = [];
   for (const msg of messages) {
     const role = (msg.role ?? "").toLowerCase().trim();
+    const text = Array.isArray(msg.content)
+      ? msg.content
+          .filter((p) => typeof p.text === "string")
+          .map((p) => p.text)
+          .join("")
+      : msg.content;
     switch (role) {
       case "system":
-        if (msg.content.trim()) systemParts.push(msg.content);
+        if (text.trim()) systemParts.push(text);
         break;
       case "user":
       case "assistant":
-        anthMessages.push({ role, content: msg.content });
+        anthMessages.push({ role, content: text });
         break;
       default:
         throw new Error(`unsupported message role "${msg.role}" for anthropic`);

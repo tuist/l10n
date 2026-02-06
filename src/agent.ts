@@ -1,6 +1,6 @@
 import type { AgentConfig } from "./config.js";
 import { FRONTMATTER_PRESERVE } from "./config.js";
-import { chat, type ChatMessage } from "./llm.js";
+import { chat, type ChatMessage, type TranslateGemmaContentPart } from "./llm.js";
 import { validate, type CheckOptions } from "./checks.js";
 import type { Format } from "./format.js";
 import type { Reporter } from "./reporter.js";
@@ -128,6 +128,19 @@ function defaultBrief(req: TranslationRequest): string {
   return lines.join("\n");
 }
 
+const LANG_CODE_MAP: Record<string, string> = {
+  "zh-Hans": "zh",
+  "zh-Hant": "zh",
+};
+
+function mapLangCode(lang: string): string {
+  return LANG_CODE_MAP[lang] ?? lang;
+}
+
+function isTranslateGemma(model: string): boolean {
+  return model.toLowerCase().includes("translategemma");
+}
+
 async function translateOnce(
   req: TranslationRequest,
   brief: string,
@@ -136,6 +149,10 @@ async function translateOnce(
 ): Promise<string> {
   const model = (req.translator.model ?? "").trim();
   if (!model) throw new Error("translator model is required");
+
+  if (isTranslateGemma(model)) {
+    return translateOnceGemma(req, model, content);
+  }
 
   let user = `Translate to ${req.targetLang}.\n\nContext:\n${req.context}\n\nSource:\n${content}`;
   if (lastErr) {
@@ -149,6 +166,24 @@ async function translateOnce(
     },
     { role: "user", content: user },
   ]);
+  return resp.replace(/\n+$/, "");
+}
+
+async function translateOnceGemma(
+  req: TranslationRequest,
+  model: string,
+  content: string,
+): Promise<string> {
+  const parts: TranslateGemmaContentPart[] = [
+    {
+      type: "text",
+      source_lang_code: "en",
+      target_lang_code: mapLangCode(req.targetLang),
+      text: content,
+    },
+  ];
+
+  const resp = await chat(req.translator, model, [{ role: "user", content: parts }]);
   return resp.replace(/\n+$/, "");
 }
 
