@@ -1,6 +1,33 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.13.1] - 2026-02-06
+
+### Other
+- Add CI workflow to auto-translate on push to main (#12)
+
+* feat: add TranslateGemma translation path and CI pipeline
+
+Wire up TranslateGemma (via Vertex AI) as the translator and Claude
+Sonnet as the coordinator. The ChatMessage content type now supports
+the structured array format TranslateGemma expects. A new CI workflow
+detects stale translations on push to main and opens a PR with updates.
+
+* fix: address PR feedback on translate workflow
+
+- Use mise-action instead of setup-bun (with caching)
+- Use exit code from `status` command instead of grepping stdout
+- Pin action SHAs for google-github-actions/auth and jdx/mise-action
+- Read Vertex AI endpoint URL from env (VERTEX_AI_ENDPOINT secret)
+- Add comment explaining the zh-Hans/zh-Hant lang code mapping
+
+* simplify: use Claude Sonnet 4.5 for both coordinator and translator
+
+Drop TranslateGemma/Vertex AI integration in favor of using Claude
+Sonnet 4.5 for both roles. This removes the need for GCP infrastructure,
+GPU endpoints, and service account secrets. The only secret needed now
+is ANTHROPIC_API_KEY.
+
 ## [v0.13.0] - 2026-02-06
 
 ### Bug Fixes
