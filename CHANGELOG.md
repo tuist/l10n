@@ -1,6 +1,31 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.13.0] - 2026-02-06
+
+### Bug Fixes
+- fix: apply biome formatting
+
+
+### Features
+- feat: unify CLI output with right-aligned verb format
+
+Replace the inconsistent Reporter interface (info, tool, activity,
+status, cleanRemoved, etc.) with three primitives: log(verb, message),
+step(verb, current, total, message), and progress(verb, total).
+
+Every output line now follows the same format: right-aligned verb in a
+12-char column, bold + colored, followed by the message. Uses standard
+ANSI 16-color instead of 256-color. On TTY, step() overwrites in place
+with \r for live progress; on CI each step prints a new line.
+
+
+### Other
+- Translate the content
+- Merge pull request #11 from tuist/claude/consistent-cli-output
+
+feat: unify CLI output with right-aligned verb format
+
 ## [v0.12.0] - 2026-02-03
 
 ### Features
