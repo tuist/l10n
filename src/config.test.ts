@@ -173,4 +173,27 @@ describe("resolveAgents", () => {
     expect(translator.base_url).toBe("https://api.anthropic.com");
     expect(translator.provider).toBe("anthropic");
   });
+
+  test("both agents share anthropic provider with different models", () => {
+    const { coordinator, translator } = resolveAgents({
+      provider: "anthropic",
+      api_key: "sk-ant-test",
+      max_tokens: 4096,
+      agent: [
+        { role: "coordinator", model: "claude-sonnet-4-5-20250514" },
+        { role: "translator", model: "claude-sonnet-4-5-20250514" },
+      ],
+    });
+    expect(coordinator.provider).toBe("anthropic");
+    expect(coordinator.model).toBe("claude-sonnet-4-5-20250514");
+    expect(coordinator.base_url).toBe("https://api.anthropic.com");
+    expect(coordinator.api_key).toBe("sk-ant-test");
+    expect(coordinator.max_tokens).toBe(4096);
+
+    expect(translator.provider).toBe("anthropic");
+    expect(translator.model).toBe("claude-sonnet-4-5-20250514");
+    expect(translator.base_url).toBe("https://api.anthropic.com");
+    expect(translator.api_key).toBe("sk-ant-test");
+    expect(translator.max_tokens).toBe(4096);
+  });
 });
