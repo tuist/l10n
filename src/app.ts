@@ -378,7 +378,10 @@ export async function cleanCmd(root: string, opts: CleanOptions): Promise<void> 
     });
   }
 
-  reporter.log("Cleaned", `${removed} files removed, ${missingCount} not found, ${lockRemoved} lockfiles removed`);
+  reporter.log(
+    "Cleaned",
+    `${removed} files removed, ${missingCount} not found, ${lockRemoved} lockfiles removed`,
+  );
 }
 
 // ── Init ───────────────────────────────────────────────────────────────
